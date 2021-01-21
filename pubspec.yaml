@@ -1,8 +1,8 @@
-name: bitcoindart
-description: A dart Bitcoin library for Flutter. BIP32, BIP39, P2PKH integration.
+name: defichaindart
+description: A dart DefiChain library for Flutter. BIP32, BIP39, P2PKH integration.
 version: 2.2.1
-homepage: https://github.com/keybagio/bitcoindart
-author: KY <harrykyguo@gmail.com>
+homepage: https://github.com/DeFiCh-WalletApp/DeFiChain-dart
+author: Patrik <patrik.pfaffenbauer@p3-software.eu>
 
 environment:
   sdk: ">=2.3.0 <3.0.0"

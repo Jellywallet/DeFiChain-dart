@@ -1,25 +1,23 @@
 <a href="https://pub.dartlang.org/packages/bitcoindart"><img alt="pub version" src="https://img.shields.io/pub/v/bitcoindart.svg?style=flat-square"></a>
 
-# bitcoindart
+# defichaindart
 
-A dart Bitcoin library for Flutter.
+A dart DefiChain library for Flutter.
 
 Released under the terms of the [MIT LICENSE](LICENSE).
 
-Inspired by [bitcoinjs](https://github.com/bitcoinjs/bitcoinjs-lib)
-
-Base on [bitcoin_flutter](https://github.com/dart-bitcoin/bitcoin_flutter)
+Base on [bitcoindart](https://github.com/DeFiCh-WalletApp/DeFiChain-dart)
 
 Otherwise, pull requests are appreciated.
 
 ## Installing
 
-[Flutter Packages](https://pub.dartlang.org/packages/bitcoindart#-installing-tab-)
+[Flutter Packages](https://pub.dartlang.org/packages/defichaindart#-installing-tab-)
 
 ## Examples
 
 ```dart
-import 'package:bitcoindart/bitcoindart.dart';
+import 'package:defichaindart/defichaindart.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 main() {
@@ -47,25 +45,25 @@ main() {
 ```
 
 The below examples are implemented as integration tests:
-- [Generate a random address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L24)
-- [Validating address](https://github.com/keybagio/bitcoindart/blob/master/test/address_test.dart)
-- [Generate an address from a SHA256 hash](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L32)
-- [Import an address via WIF](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L42)
-- [Generate a Testnet address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L51)
-- [Generate a Litecoin address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L63)
-- [Generate a Segwit address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L74)
-- [Generate a Segwit Testnet address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L83)
-- [Generate a Segwit address (via P2SH)](https://github.com/keybagio/bitcoindart/blob/master/test/integration/addresses_test.dart#L95)
-- [Create a 1-to-1 Transaction](https://github.com/keybagio/bitcoindart/blob/master/test/integration/transactions_test.dart#11)
-- [Create a 2-to-2 Transaction](https://github.com/keybagio/bitcoindart/blob/master/test/integration/transactions_test.dart#L30)
-- [Create a Transaction with a SegWit P2SH(P2WPKH) input](https://github.com/keybagio/bitcoindart/blob/master/test/integration/transactions_test.dart#L62)
-- [Create a Transaction with a SegWit P2WPKH input](https://github.com/keybagio/bitcoindart/blob/master/test/integration/transactions_test.dart#L86)
-- [Import a BIP32 testnet xpriv and export to WIF](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L9)
-- [Export a BIP32 xpriv, then import it](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L14)
-- [Export a BIP32 xpub](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L23)
-- [Create a BIP32, bitcoin, account 0, external address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L30)
-- [Create a BIP44, bitcoin, account 0, external address](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L41)
-- [Use BIP39 to generate BIP32 addresses](https://github.com/keybagio/bitcoindart/blob/master/test/integration/bip32_test.dart#L56)
+- [Generate a random address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L24)
+- [Validating address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/address_test.dart)
+- [Generate an address from a SHA256 hash](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L32)
+- [Import an address via WIF](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L42)
+- [Generate a Testnet address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L51)
+- [Generate a Litecoin address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L63)
+- [Generate a Segwit address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L74)
+- [Generate a Segwit Testnet address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L83)
+- [Generate a Segwit address (via P2SH)](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/addresses_test.dart#L95)
+- [Create a 1-to-1 Transaction](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/transactions_test.dart#11)
+- [Create a 2-to-2 Transaction](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/transactions_test.dart#L30)
+- [Create a Transaction with a SegWit P2SH(P2WPKH) input](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/transactions_test.dart#L62)
+- [Create a Transaction with a SegWit P2WPKH input](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/transactions_test.dart#L86)
+- [Import a BIP32 testnet xpriv and export to WIF](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L9)
+- [Export a BIP32 xpriv, then import it](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L14)
+- [Export a BIP32 xpub](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L23)
+- [Create a BIP32, bitcoin, account 0, external address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L30)
+- [Create a BIP44, bitcoin, account 0, external address](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L41)
+- [Use BIP39 to generate BIP32 addresses](https://github.com/DeFiCh-WalletApp/DeFiChain-dart/blob/master/test/integration/bip32_test.dart#L56)
 
 
 ### TODO
