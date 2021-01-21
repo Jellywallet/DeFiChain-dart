@@ -6,7 +6,7 @@ A dart DefiChain library for Flutter.
 
 Released under the terms of the [MIT LICENSE](LICENSE).
 
-Base on [bitcoindart](https://github.com/DeFiCh-WalletApp/DeFiChain-dart)
+Base on [bitcoindart](https://github.com/keybagio/bitcoindart)
 
 Otherwise, pull requests are appreciated.
 

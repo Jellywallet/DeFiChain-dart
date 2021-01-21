@@ -1,4 +1,4 @@
-import 'package:bitcoindart/bitcoindart.dart';
+import 'package:defichaindart/bitcoindart.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 void main() {

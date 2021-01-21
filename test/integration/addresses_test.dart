@@ -1,9 +1,9 @@
-import 'package:bitcoindart/src/models/networks.dart' as networks;
-import 'package:bitcoindart/src/ecpair.dart' show ECPair;
-import 'package:bitcoindart/src/payments/index.dart' show PaymentData;
-import 'package:bitcoindart/src/payments/p2sh.dart' show P2SH;
-import 'package:bitcoindart/src/payments/p2pkh.dart' show P2PKH;
-import 'package:bitcoindart/src/payments/p2wpkh.dart' show P2WPKH;
+import 'package:defichaindart/src/models/networks.dart' as networks;
+import 'package:defichaindart/src/ecpair.dart' show ECPair;
+import 'package:defichaindart/src/payments/index.dart' show PaymentData;
+import 'package:defichaindart/src/payments/p2sh.dart' show P2SH;
+import 'package:defichaindart/src/payments/p2pkh.dart' show P2PKH;
+import 'package:defichaindart/src/payments/p2wpkh.dart' show P2WPKH;
 import 'package:pointycastle/digests/sha256.dart';
 import 'dart:convert';
 import 'package:test/test.dart';

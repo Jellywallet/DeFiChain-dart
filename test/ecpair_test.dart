@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:hex/hex.dart';
-import 'package:bitcoindart/src/ecpair.dart' show ECPair;
-import 'package:bitcoindart/src/models/networks.dart' as networks;
+import 'package:defichaindart/src/ecpair.dart' show ECPair;
+import 'package:defichaindart/src/models/networks.dart' as networks;
 
 final ONE = HEX
     .decode('0000000000000000000000000000000000000000000000000000000000000001');

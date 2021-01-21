@@ -1,10 +1,10 @@
-import 'package:bitcoindart/src/payments/index.dart' show PaymentData;
-import 'package:bitcoindart/src/payments/p2pkh.dart';
-import 'package:bitcoindart/src/payments/p2sh.dart';
-import 'package:bitcoindart/src/payments/p2wpkh.dart';
-import 'package:bitcoindart/src/models/networks.dart' as networks;
+import 'package:defichaindart/src/payments/index.dart' show PaymentData;
+import 'package:defichaindart/src/payments/p2pkh.dart';
+import 'package:defichaindart/src/payments/p2sh.dart';
+import 'package:defichaindart/src/payments/p2wpkh.dart';
+import 'package:defichaindart/src/models/networks.dart' as networks;
 import 'package:test/test.dart';
-import 'package:bitcoindart/src/utils/script.dart' as bscript;
+import 'package:defichaindart/src/utils/script.dart' as bscript;
 import 'dart:io';
 import 'dart:convert';
 import 'package:hex/hex.dart';

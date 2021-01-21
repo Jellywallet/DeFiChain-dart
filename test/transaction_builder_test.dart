@@ -3,14 +3,14 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:hex/hex.dart';
-import 'package:bitcoindart/src/models/networks.dart';
-import 'package:bitcoindart/src/ecpair.dart';
-import 'package:bitcoindart/src/transaction.dart';
-import 'package:bitcoindart/src/address.dart';
-import 'package:bitcoindart/src/transaction_builder.dart';
-import 'package:bitcoindart/src/utils/script.dart' as bscript;
-import 'package:bitcoindart/src/payments/index.dart' show PaymentData;
-import 'package:bitcoindart/src/payments/p2pkh.dart';
+import 'package:defichaindart/src/models/networks.dart';
+import 'package:defichaindart/src/ecpair.dart';
+import 'package:defichaindart/src/transaction.dart';
+import 'package:defichaindart/src/address.dart';
+import 'package:defichaindart/src/transaction_builder.dart';
+import 'package:defichaindart/src/utils/script.dart' as bscript;
+import 'package:defichaindart/src/payments/index.dart' show PaymentData;
+import 'package:defichaindart/src/payments/p2pkh.dart';
 
 final networks = {'bitcoin': bitcoin, 'testnet': testnet};
 

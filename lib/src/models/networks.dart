@@ -49,3 +49,21 @@ final testnet = NetworkType(
     pubKeyHash: 0x6f,
     scriptHash: 0xc4,
     wif: 0xef);
+
+    
+final defichain = NetworkType(
+    messagePrefix: '\x18Defichain Signed Message:\n',
+    bech32: 'df',
+    bip32: Bip32Type(public: 0x0488B21E, private: 0x0488ADE4),
+    pubKeyHash: 0x12,
+    scriptHash: 0x5a,
+    wif: 0x80);
+
+final defichain_testnet = NetworkType(
+    messagePrefix: '\x18Defichain Signed Message:\n',
+    bech32: 'tf',
+    bip32: Bip32Type(public: 0x043587cf, private: 0x04358394),
+    pubKeyHash: 0xf,
+    scriptHash: 0x80,
+    wif: 0xef);
+

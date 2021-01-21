@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:hex/hex.dart';
 import 'dart:typed_data';
-import 'package:bitcoindart/src/utils/script.dart' as bscript;
-import 'package:bitcoindart/src/transaction.dart';
+import 'package:defichaindart/src/utils/script.dart' as bscript;
+import 'package:defichaindart/src/transaction.dart';
 
 void main() {
   final fixtures = json.decode(

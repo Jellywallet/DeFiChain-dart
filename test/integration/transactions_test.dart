@@ -1,10 +1,10 @@
 import 'package:test/test.dart';
 
-import 'package:bitcoindart/src/ecpair.dart';
-import 'package:bitcoindart/src/transaction_builder.dart';
-import 'package:bitcoindart/src/models/networks.dart' as networks;
-import 'package:bitcoindart/src/payments/p2wpkh.dart' show P2WPKH;
-import 'package:bitcoindart/src/payments/index.dart' show PaymentData;
+import 'package:defichaindart/src/ecpair.dart';
+import 'package:defichaindart/src/transaction_builder.dart';
+import 'package:defichaindart/src/models/networks.dart' as networks;
+import 'package:defichaindart/src/payments/p2wpkh.dart' show P2WPKH;
+import 'package:defichaindart/src/payments/index.dart' show PaymentData;
 
 void main() {
   group('bitcoinjs-lib (transactions)', () {
