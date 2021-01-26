@@ -1,6 +1,6 @@
-import 'package:defichaindart/bitcoindart.dart';
+import 'package:defichaindart/defichaindart.dart';
 import 'package:test/test.dart';
-import 'package:bip39/bip39.dart' as bip39;
+import 'package:defichaindart/defichaindart.dart' as bip39;
 
 void main() {
   group('bitcoin-dart (HDWallet)', () {

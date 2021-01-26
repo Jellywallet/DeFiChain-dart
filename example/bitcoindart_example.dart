@@ -1,5 +1,5 @@
-import 'package:defichaindart/bitcoindart.dart';
-import 'package:bip39/bip39.dart' as bip39;
+import 'package:defichaindart/defichaindart.dart';
+import 'package:defichaindart/defichaindart.dart' as bip39;
 
 void main() {
   var seed = bip39.mnemonicToSeed(

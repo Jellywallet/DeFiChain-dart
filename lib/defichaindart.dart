@@ -1,7 +1,4 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
-library bitcoindart;
+library defichaindart;
 
 export 'src/bitcoindart_base.dart';
 export 'src/models/networks.dart';
@@ -12,4 +9,5 @@ export 'src/ecpair.dart';
 export 'src/payments/p2pkh.dart';
 export 'src/payments/p2wpkh.dart';
 export 'src/payments/index.dart';
-// TODO: Export any libraries intended for clients of this package.
+
+export 'src/bip39/bip39_base.dart';

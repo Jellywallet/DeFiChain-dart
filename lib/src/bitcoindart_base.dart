@@ -1,4 +1,3 @@
-// TODO: Put public facing types in this file.
 import 'dart:typed_data';
 import 'package:defichaindart/src/utils/magic_hash.dart';
 import 'package:hex/hex.dart';

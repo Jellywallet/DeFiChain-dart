@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bech32/bech32.dart';
-import 'package:defichaindart/bitcoindart.dart';
+import 'package:defichaindart/defichaindart.dart';
 import 'package:defichaindart/src/payments/p2sh.dart';
 import 'package:test/test.dart';
 import 'package:defichaindart/src/address.dart' show Address;
