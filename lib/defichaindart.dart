@@ -12,3 +12,4 @@ export 'src/payments/p2sh.dart';
 export 'src/payments/index.dart';
 
 export 'src/bip39/bip39_base.dart';
+export 'src/models/networks.dart';
