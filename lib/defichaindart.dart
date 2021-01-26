@@ -8,6 +8,7 @@ export 'src/transaction_builder.dart';
 export 'src/ecpair.dart';
 export 'src/payments/p2pkh.dart';
 export 'src/payments/p2wpkh.dart';
+export 'src/payments/p2sh.dart';
 export 'src/payments/index.dart';
 
 export 'src/bip39/bip39_base.dart';

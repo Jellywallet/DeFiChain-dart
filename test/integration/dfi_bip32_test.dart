@@ -1,6 +1,5 @@
 import 'package:defichaindart/defichaindart.dart';
 import 'package:defichaindart/src/payments/index.dart' show PaymentData;
-import 'package:defichaindart/src/payments/p2pkh.dart';
 import 'package:defichaindart/src/payments/p2sh.dart';
 import 'package:test/test.dart';
 import 'package:hex/hex.dart';

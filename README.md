@@ -1,4 +1,4 @@
-<a href="https://pub.dartlang.org/packages/bitcoindart"><img alt="pub version" src="https://img.shields.io/pub/v/bitcoindart.svg?style=flat-square"></a>
+<a href="https://pub.dartlang.org/packages/defichaindart"><img alt="pub version" src="https://img.shields.io/pub/v/defichaindart.svg?style=flat-square"></a>
 
 # defichaindart
 
@@ -18,7 +18,6 @@ Otherwise, pull requests are appreciated.
 
 ```dart
 import 'package:defichaindart/defichaindart.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 main() {
   var seed = bip39.mnemonicToSeed("praise you muffin lion enable neck grocery crumble super myself license ghost");
