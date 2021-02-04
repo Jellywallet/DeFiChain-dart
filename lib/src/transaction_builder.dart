@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:defichaindart/src/defi.dart';
 import 'package:meta/meta.dart';
 import 'package:hex/hex.dart';
 import 'utils/script.dart' as bscript;
@@ -99,6 +100,21 @@ class TransactionBuilder {
     return _tx.addOutput(scriptPubKey, value);
   }
 
+  int addAnyAccountToAccountOutput(
+      dynamic token, dynamic from, int fromValue, dynamic to, int toValue,
+      [NetworkType nw]) {
+    return _tx.addBaseOutput(
+        DefiTransactionHelper.createAnyAccountToAccountOutput(
+            token, from, fromValue, to, toValue, nw));
+  }
+
+  int addAccountToAccountOutput(
+      dynamic token, dynamic from, dynamic to, int toValue,
+      [NetworkType nw]) {
+    return _tx.addBaseOutput(DefiTransactionHelper.createAccountToAccountOuput(
+        token, from, to, toValue, nw));
+  }
+
   int addInput(dynamic txHash, int vout,
       [int sequence, Uint8List prevOutScript]) {
     if (!_canModifyInputs()) {
@@ -131,7 +147,6 @@ class TransactionBuilder {
       Uint8List witnessScript,
       int hashType}) {
     // TODO checkSignArgs
-
     if (keyPair.network != null &&
         keyPair.network.toString().compareTo(network.toString()) != 0) {
       throw ArgumentError('Inconsistent network');
@@ -162,13 +177,14 @@ class TransactionBuilder {
         // TODO p2wsh
       }
       if (redeemScript != null) {
-        final p2sh =
-            P2SH(data: PaymentData(redeem: PaymentData(output: redeemScript)));
+        final p2sh = P2SH(
+            data: PaymentData(redeem: PaymentData(output: redeemScript)),
+            network: network);
         if (input.prevOutScript != null) {
           // TODO check
         }
         final expanded =
-            Output.expandOutput(p2sh.data.redeem.output, ourPubKey);
+            OutputBase.expandOutput(p2sh.data.redeem.output, ourPubKey);
 
         if (expanded.pubkeys == null) {
           throw ArgumentError(
@@ -183,8 +199,11 @@ class TransactionBuilder {
 
         var signScript = redeemScript;
         if (expanded.type == SCRIPT_TYPES['P2WPKH']) {
-          signScript =
-              P2PKH(data: PaymentData(pubkey: expanded.pubkeys[0])).data.output;
+          signScript = P2PKH(
+                  data: PaymentData(pubkey: expanded.pubkeys[0]),
+                  network: network)
+              .data
+              .output;
         }
         input.redeemScript = redeemScript;
         input.redeemScriptType = expanded.type;
@@ -400,7 +419,7 @@ class TransactionBuilder {
     if (options.value != null) input.value = options.value;
     if (input.prevOutScript == null && options.prevOutScript != null) {
       if (input.pubkeys == null && input.signatures == null) {
-        var expanded = Output.expandOutput(options.prevOutScript);
+        var expanded = OutputBase.expandOutput(options.prevOutScript);
         if (expanded.pubkeys != null && expanded.pubkeys.isNotEmpty) {
           input.pubkeys = expanded.pubkeys;
           input.signatures = expanded.signatures;

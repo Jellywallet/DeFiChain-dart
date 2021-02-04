@@ -1,3 +1,4 @@
+import 'package:bs58check/bs58check.dart';
 import 'package:defichaindart/defichaindart.dart';
 import 'package:defichaindart/src/payments/index.dart' show PaymentData;
 import 'package:defichaindart/src/payments/p2sh.dart';
@@ -96,7 +97,8 @@ void main() {
               wif: networks.defichain_testnet.wif));
 
       //cNpueJjp8geQJut28fDyUD8e5zoyctHxj9GE8rTbQXwiEwLo1kq4
-      var rootEc = ECPair.fromWIF("cQiVtAhXBopRjuYaz1mU3PHgQxSzEwT4VigMmAEU1Cp63d7cC1Ls");
+      var rootEc = ECPair.fromWIF(
+          "cQiVtAhXBopRjuYaz1mU3PHgQxSzEwT4VigMmAEU1Cp63d7cC1Ls");
 
       var wallet = ECPair.fromWIF(
           'cNpueJjp8geQJut28fDyUD8e5zoyctHxj9GE8rTbQXwiEwLo1kq4',
@@ -124,6 +126,46 @@ void main() {
       expect(
           getAddress(root.derivePath("m/0'/1/1"), networks.defichain_testnet),
           '1EAvj4edpsWcSer3duybAd4KiR4bCJW5J6');
+    });
+
+    test("test vectors", () {
+      var mnemonic =
+          "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+
+      final entropy = mnemonicToEntropy(mnemonic);
+      final seed = mnemonicToSeed(mnemonic, passphrase: "TREZOR");
+      final xPriv = bip32.BIP32.fromSeed(seed);
+      final xPriv0 = xPriv.derivePath("s");
+      var wif = xPriv.toBase58();
+      var wif0 = xPriv0.toBase58();
+
+      expect(wif,
+          "xprv9s21ZrQH143K3h3fDYiay8mocZ3afhfULfb5GX8kCBdno77K4HiA15Tg23wpbeF1pLfs1c5SPmYHrEpTuuRhxMwvKDwqdKiGJS9XFKzUsAF");
+    });
+
+    test("can import recovery phrase", () {
+      var mnemonic =
+          'sample visa rain lab truly dwarf hospital uphold stereo ride combine arrest aspect exist oil just boy garment estate enable marriage coyote blue yellow';
+
+      final seed = mnemonicToSeed(mnemonic, passphrase: "");
+      final xPriv = bip32.BIP32.fromSeed(
+          seed,
+          bip32.NetworkType(
+              bip32: bip32.Bip32Type(
+                  private: defichain_testnet.bip32.private,
+                  public: defichain_testnet.bip32.public),
+              wif: defichain_testnet.wif));
+      var wif = xPriv.toBase58();
+      //cMmT7Q7sy3y44zbHWvkQQRto4hMsnMHfPJNXCeaadNHjZXU5HQ88
+      var hdSeed = xPriv.toWIF();
+      final xPriv0 = xPriv.derivePath("m/0'");
+      var wif0 = xPriv0.toBase58();
+
+      var ecPair = ECPair.fromWIF(hdSeed);
+      var privateKey = base58.encode(ecPair.privateKey);
+
+      expect(wif,
+          "tprv8ZgxMBicQKsPd9Gff9E9fvhL5SDCLdKbjPbaREPyjLk743Sry9nAmESmaWwijZuGqer1Q4rG1SaUhc7XHvFg6y44z6JaKmTeHyJgNQism1U");
     });
   });
 }

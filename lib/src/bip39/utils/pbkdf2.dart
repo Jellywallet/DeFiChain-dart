@@ -13,19 +13,20 @@ class PBKDF2 {
 
   PBKDF2KeyDerivator _derivator;
 
-  PBKDF2({this.blockLength = 128,
-          this.iterationCount = 2048,
-          this.desiredKeyLength = 64,
-          }) {
+  PBKDF2({
+    this.blockLength = 128,
+    this.iterationCount = 2048,
+    this.desiredKeyLength = 64,
+  }) {
     _derivator =
-    new PBKDF2KeyDerivator(new HMac(new SHA512Digest(), blockLength)) ;
+        new PBKDF2KeyDerivator(new HMac(new SHA512Digest(), blockLength));
   }
 
   Uint8List process(String mnemonic, {passphrase: ""}) {
-      Uint8List salt = utf8.encode(saltPrefix + passphrase);
-      _derivator.reset();
-      _derivator.init(new Pbkdf2Parameters(salt, iterationCount,
-                      desiredKeyLength));
-    return _derivator.process(new Uint8List.fromList(mnemonic.codeUnits));
+    Uint8List salt = utf8.encode(saltPrefix + passphrase);
+    _derivator.reset();
+    _derivator
+        .init(new Pbkdf2Parameters(salt, iterationCount, desiredKeyLength));
+    return _derivator.process(new Uint8List.fromList(utf8.encode(mnemonic)));
   }
 }

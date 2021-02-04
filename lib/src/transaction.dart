@@ -1,4 +1,6 @@
+import 'dart:ffi';
 import 'dart:typed_data';
+import 'package:defichaindart/src/defi.dart';
 import 'package:hex/hex.dart';
 import 'payments/index.dart' show PaymentData;
 import 'payments/p2pkh.dart' show P2PKH;
@@ -33,7 +35,7 @@ class Transaction {
   int version = 1;
   int locktime = 0;
   List<Input> ins = [];
-  List<Output> outs = [];
+  List<OutputBase> outs = [];
   Transaction();
 
   int addInput(Uint8List hash, int index, [int sequence, Uint8List scriptSig]) {
@@ -48,6 +50,11 @@ class Transaction {
 
   int addOutput(Uint8List scriptPubKey, int value) {
     outs.add(Output(script: scriptPubKey, value: value));
+    return outs.length - 1;
+  }
+
+  int addBaseOutput(OutputBase output) {
+    outs.add(output);
     return outs.length - 1;
   }
 
@@ -412,7 +419,7 @@ class Transaction {
       return Input.clone(input);
     }).toList();
     tx.outs = _tx.outs.map((output) {
-      return Output.clone(output);
+      return OutputBase.clone(output);
     }).toList();
     return tx;
   }
@@ -697,7 +704,7 @@ class Input {
   }
 }
 
-class Output {
+class OutputBase {
   String type;
   Uint8List script;
   int value;
@@ -706,21 +713,17 @@ class Output {
   List<Uint8List> signatures;
   int maxSignatures;
 
-  Output(
+  OutputBase(
       {this.type,
       this.script,
       this.value,
       this.pubkeys,
       this.signatures,
       this.valueBuffer,
-      this.maxSignatures}) {
-    if (value != null && !isShatoshi(value)) {
-      throw ArgumentError('Invalid ouput value');
-    }
-  }
+      this.maxSignatures}) {}
 
-  factory Output.expandOutput(Uint8List script, [Uint8List ourPubKey]) {
-    if (ourPubKey == null) return Output();
+  factory OutputBase.expandOutput(Uint8List script, [Uint8List ourPubKey]) {
+    if (ourPubKey == null) return OutputBase();
     var type = classifyOutput(script);
     if (type == SCRIPT_TYPES['P2WPKH']) {
       var wpkh1 = P2WPKH(data: PaymentData(output: script)).data.hash;
@@ -728,7 +731,7 @@ class Output {
       if (wpkh1.toString() != wpkh2.toString()) {
         throw ArgumentError('Hash mismatch!');
       }
-      return Output(type: type, pubkeys: [ourPubKey], signatures: [null]);
+      return OutputBase(type: type, pubkeys: [ourPubKey], signatures: [null]);
     }
 
     if (type == SCRIPT_TYPES['P2PKH']) {
@@ -737,14 +740,14 @@ class Output {
       if (pkh1.toString() != pkh2.toString()) {
         throw ArgumentError('Hash mismatch!');
       }
-      return Output(type: type, pubkeys: [ourPubKey], signatures: [null]);
+      return OutputBase(type: type, pubkeys: [ourPubKey], signatures: [null]);
     }
 
-    return Output();
+    return OutputBase();
   }
 
-  factory Output.clone(Output output) {
-    return Output(
+  factory OutputBase.clone(OutputBase output) {
+    return OutputBase(
       type: output.type,
       script: output.script != null ? Uint8List.fromList(output.script) : null,
       value: output.value,
@@ -774,6 +777,29 @@ class Output {
         signatures: $signatures
       }
     ''';
+  }
+}
+
+class Output extends OutputBase {
+  Output(
+      {String type,
+      Uint8List script,
+      int value,
+      Uint8List valueBuffer,
+      List<Uint8List> pubkeys,
+      List<Uint8List> signartures,
+      int maxSignatures})
+      : super(
+            type: type,
+            script: script,
+            value: value,
+            valueBuffer: valueBuffer,
+            pubkeys: pubkeys,
+            signatures: signartures,
+            maxSignatures: maxSignatures) {
+    if (value != null && !isShatoshi(value)) {
+      throw ArgumentError('Invalid ouput value');
+    }
   }
 }
 
