@@ -41,7 +41,7 @@ class DefiTxTypes {
 }
 
 class DefiOutput extends OutputBase {
-  DefiOutput(Uint8List script) : super(script: script, value: 0);
+  DefiOutput(Uint8List script, int value) : super(script: script, value: value);
 }
 
 class DefiTransactionHelper {
@@ -85,11 +85,12 @@ class DefiTransactionHelper {
     var script = _prepare(DefiTxTypes.AccountToAccount);
 
     script.addAll(_createScript(from, nw));
-    script.addAll(_createAccount(token, to, toValue, nw));
+    script.add(1); // add 1 account
+    script.addAll(_addAccount(token, to, toValue, nw));
 
     var defiScript = Uint8List.fromList(script);
 
-    return DefiOutput(_postpare(defiScript));
+    return DefiOutput(_postpare(defiScript), 0);
   }
 
   static DefiOutput createAnyAccountToAccountOutput(
@@ -97,12 +98,70 @@ class DefiTransactionHelper {
       [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.AnyAccountsToAccounts);
 
-    script.addAll(_createAccount(token, from, fromValue, nw));
-    script.addAll(_createAccount(token, to, toValue, nw));
+    script.add(1); // add 1 from account
+    script.addAll(_addAccount(token, from, fromValue, nw));
+    script.add(1); // add 1 to account
+    script.addAll(_addAccount(token, to, toValue, nw));
 
     var defiScript = Uint8List.fromList(script);
 
-    return DefiOutput(_postpare(defiScript));
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createPoolSwapOutput(
+      dynamic fromToken,
+      dynamic from,
+      int fromAmount,
+      dynamic toToken,
+      dynamic to,
+      int toValue,
+      int maxPrice,
+      int maxPricefraction,
+      [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.PoolSwap);
+
+    script.addAll(_createScript(from, nw));
+    script.addAll(_convertInt32(fromToken));
+    script.addAll(_convertInt64(fromAmount));
+
+    script.addAll(_createScript(to, nw));
+    script.addAll(_convertInt32(toToken));
+    script.addAll(_convertInt64(toValue));
+
+    script.addAll(_convertInt64(maxPrice * 100000000));
+    script.addAll(_convertInt64(maxPricefraction * 100000000));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createAccountToUtxos(
+      dynamic token, dynamic from, int value, int mintingOutputsStart,
+      [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.AccountToUtxos);
+
+    script.addAll(_createScript(from, nw));
+    script.addAll(_createBalance([token], [value]));
+    script.add(mintingOutputsStart);
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createUtxosToAccount(
+      dynamic token, dynamic from, int value, 
+      [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.UtxosToAccount);
+    
+    script.add(1); // add 1 from account
+    script.addAll(_addAccount(token, from, value, nw));
+
+    var defiScript = Uint8List.fromList(script);
+    
+
+    return DefiOutput(_postpare(defiScript), value);
   }
 
   static Uint8List _createScript(dynamic address, NetworkType nw) {
@@ -114,19 +173,30 @@ class DefiTransactionHelper {
     return Uint8List.fromList(script);
   }
 
-  static Uint8List _createAccount(
+  static Uint8List _addAccount(
       dynamic token, dynamic address, int value, NetworkType nw) {
     var script = List<int>.empty(growable: true);
-    //add accounts - for now we only allow 1
-    script.add(1);
-    script.addAll(_createScript(address, nw));
 
-    //add defi balance - for now we only allow 1
-    script.add(1);
-    // add token type
-    script.addAll(_convertInt32(token));
-    // add token amount
-    script.addAll(_convertInt64(value));
+    script.addAll(_createScript(address, nw));
+    script.addAll(_createBalance([token], [value]));
+
+    return Uint8List.fromList(script);
+  }
+
+  static Uint8List _createBalance(List<dynamic> token, List<int> value) {
+    var script = List<int>.empty(growable: true);
+
+    if (token.length != value.length) {
+      throw ArgumentError("token and value list must have equal length");
+    }
+
+    script.add(token.length);
+    for (int i = 0; i < token.length; i++) {
+      // add token type
+      script.addAll(_convertInt32(token[i]));
+      // add token amount
+      script.addAll(_convertInt64(value[i]));
+    }
 
     return Uint8List.fromList(script);
   }

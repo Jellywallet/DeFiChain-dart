@@ -115,6 +115,21 @@ class TransactionBuilder {
         token, from, to, toValue, nw));
   }
 
+  int addAccountToUtxoOutput(
+      dynamic token, dynamic from, int value, int mintStartintAt,
+      [NetworkType nw]) {
+    var ret = _tx.addBaseOutput(DefiTransactionHelper.createAccountToUtxos(
+        token, from, value, mintStartintAt, nw));
+    return ret;
+  }
+
+  int addUtxosToAccountOutput(dynamic token, dynamic from, int value,
+      [NetworkType nw]) {
+    var ret = _tx.addBaseOutput(
+        DefiTransactionHelper.createUtxosToAccount(token, from, value, nw));
+    return ret;
+  }
+
   int addInput(dynamic txHash, int vout,
       [int sequence, Uint8List prevOutScript]) {
     if (!_canModifyInputs()) {
