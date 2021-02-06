@@ -136,6 +136,22 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
+  static DefiOutput createAddPoolLiquidity(dynamic token, dynamic from,
+      int fromAmount, dynamic to, int toAmount, dynamic shareAddress,
+      [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.AccountToUtxos);
+
+    script.add(2);
+    script.addAll(_addAccount(token, from, fromAmount, nw));
+    script.addAll(_addAccount(token, to, toAmount, nw));
+
+    script.addAll(_createScript(shareAddress, nw));
+    
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
   static DefiOutput createAccountToUtxos(
       dynamic token, dynamic from, int value, int mintingOutputsStart,
       [NetworkType nw]) {
@@ -150,16 +166,14 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createUtxosToAccount(
-      dynamic token, dynamic from, int value, 
+  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value,
       [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.UtxosToAccount);
-    
+
     script.add(1); // add 1 from account
     script.addAll(_addAccount(token, from, value, nw));
 
     var defiScript = Uint8List.fromList(script);
-    
 
     return DefiOutput(_postpare(defiScript), value);
   }
