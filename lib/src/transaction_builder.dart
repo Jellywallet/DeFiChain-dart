@@ -106,6 +106,10 @@ class TransactionBuilder {
     return _tx.addBaseOutput(
         DefiTransactionHelper.createAnyAccountToAccountOutput(
             token, from, fromValue, to, toValue, nw));
+  }  
+  int addAuthOutput() {
+    return _tx.addBaseOutput(
+        DefiTransactionHelper.createAuthOutput());
   }
 
   int addAccountToAccountOutput(

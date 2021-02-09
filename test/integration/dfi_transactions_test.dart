@@ -105,7 +105,7 @@ void main() {
 
       txb.setVersion(2);
       txb.addInput(
-          '736b2098bfd9af8de4d6d86135ad5c18dd355df5cba3d0ebae57b1a57cfc7f4e ',
+          '736b2098bfd9af8de4d6d86135ad5c18dd355df5cba3d0ebae57b1a57cfc7f4e',
           1);
 
       txb.addUtxosToAccountOutput(0, "teg1zqnGVqGKmu1WmZH7BPTL9CthbYBAYs",

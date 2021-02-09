@@ -136,6 +136,13 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
+  static DefiOutput createAuthOutput() {
+    var script = _prepare(DefiTxTypes.AutoAuthPrep);
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
   static DefiOutput createAddPoolLiquidity(dynamic token, dynamic from,
       int fromAmount, dynamic to, int toAmount, dynamic shareAddress,
       [NetworkType nw]) {
@@ -146,7 +153,7 @@ class DefiTransactionHelper {
     script.addAll(_addAccount(token, to, toAmount, nw));
 
     script.addAll(_createScript(shareAddress, nw));
-    
+
     var defiScript = Uint8List.fromList(script);
 
     return DefiOutput(_postpare(defiScript), 0);
