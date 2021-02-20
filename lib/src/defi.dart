@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:defichaindart/src/utils/constants/op.dart';
+import 'package:defichaindart/src/utils/varuint.dart';
 
 import '../defichaindart.dart';
 
@@ -109,27 +110,25 @@ class DefiTransactionHelper {
   }
 
   static DefiOutput createPoolSwapOutput(
-      dynamic fromToken,
-      dynamic from,
+      int fromToken,
+      String from,
       int fromAmount,
-      dynamic toToken,
-      dynamic to,
-      int toValue,
+      int toToken,
+      String to,
       int maxPrice,
       int maxPricefraction,
       [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.PoolSwap);
 
     script.addAll(_createScript(from, nw));
-    script.addAll(_convertInt32(fromToken));
+    script.addAll(_convertUint(fromToken));
     script.addAll(_convertInt64(fromAmount));
 
     script.addAll(_createScript(to, nw));
-    script.addAll(_convertInt32(toToken));
-    script.addAll(_convertInt64(toValue));
-
-    script.addAll(_convertInt64(maxPrice * 100000000));
-    script.addAll(_convertInt64(maxPricefraction * 100000000));
+    script.addAll(_convertUint(toToken));
+    
+    script.addAll(_convertInt64(maxPrice));
+    script.addAll(_convertInt64(maxPricefraction));
 
     var defiScript = Uint8List.fromList(script);
 
@@ -227,6 +226,10 @@ class DefiTransactionHelper {
     var byteData = buffer.buffer.asByteData();
     byteData.setUint32(0, value, Endian.little);
     return buffer;
+  }
+
+  static Uint8List _convertUint(int value) {
+    return encode(value);
   }
 
   static Uint8List _convertInt64(int value) {

@@ -53,9 +53,19 @@ class Transaction {
     return outs.length - 1;
   }
 
+  int addOutputAt(Uint8List scriptPubKey, int value, int at) {
+    final output = Output(script: scriptPubKey, value: value);
+    return addBaseOutputAt(output, at);
+  }
+
   int addBaseOutput(OutputBase output) {
     outs.add(output);
     return outs.length - 1;
+  }
+
+  int addBaseOutputAt(OutputBase output, int index) {
+    outs.insert(index, output);
+    return index;
   }
 
   bool hasWitnesses() {

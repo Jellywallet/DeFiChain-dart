@@ -100,38 +100,79 @@ class TransactionBuilder {
     return _tx.addOutput(scriptPubKey, value);
   }
 
+  int addOutputAt(dynamic data, int value, int at) {
+    var scriptPubKey;
+    if (data is String) {
+      scriptPubKey = Address.addressToOutputScript(data, network);
+    } else if (data is Uint8List) {
+      scriptPubKey = data;
+    } else {
+      throw ArgumentError('Address invalid');
+    }
+    if (!_canModifyOutputs()) {
+      throw ArgumentError('No, this would invalidate signatures');
+    }
+    return _tx.addOutputAt(scriptPubKey, value, at);
+  }
+
   int addAnyAccountToAccountOutput(
-      dynamic token, dynamic from, int fromValue, dynamic to, int toValue,
-      [NetworkType nw]) {
+      dynamic token, dynamic from, int fromValue, dynamic to, int toValue) {
     return _tx.addBaseOutput(
         DefiTransactionHelper.createAnyAccountToAccountOutput(
-            token, from, fromValue, to, toValue, nw));
-  }  
-  int addAuthOutput() {
-    return _tx.addBaseOutput(
-        DefiTransactionHelper.createAuthOutput());
+            token, from, fromValue, to, toValue, network));
+  }
+
+  int addAuthOutput({int outputIndex = -1}) {
+    if (outputIndex < 0) {
+      return _tx.addBaseOutput(DefiTransactionHelper.createAuthOutput());
+    }
+    return _tx.addBaseOutputAt(
+        DefiTransactionHelper.createAuthOutput(), outputIndex);
   }
 
   int addAccountToAccountOutput(
-      dynamic token, dynamic from, dynamic to, int toValue,
-      [NetworkType nw]) {
+      dynamic token, dynamic from, dynamic to, int toValue) {
     return _tx.addBaseOutput(DefiTransactionHelper.createAccountToAccountOuput(
-        token, from, to, toValue, nw));
+        token, from, to, toValue, network));
+  }
+
+  int addAccountToAccountOutputAt(
+      dynamic token, dynamic from, dynamic to, int toValue, int at) {
+    return _tx.addBaseOutputAt(
+        DefiTransactionHelper.createAccountToAccountOuput(
+            token, from, to, toValue, network),
+        at);
   }
 
   int addAccountToUtxoOutput(
-      dynamic token, dynamic from, int value, int mintStartintAt,
-      [NetworkType nw]) {
-    var ret = _tx.addBaseOutput(DefiTransactionHelper.createAccountToUtxos(
-        token, from, value, mintStartintAt, nw));
-    return ret;
+      dynamic token, dynamic from, int value, int mintStartintAt) {
+    _tx.addBaseOutputAt(
+        DefiTransactionHelper.createAccountToUtxos(
+            token, from, value, mintStartintAt, network),
+        0);
+    return 0;
   }
 
   int addUtxosToAccountOutput(dynamic token, dynamic from, int value,
       [NetworkType nw]) {
-    var ret = _tx.addBaseOutput(
-        DefiTransactionHelper.createUtxosToAccount(token, from, value, nw));
-    return ret;
+    _tx.addBaseOutputAt(
+        DefiTransactionHelper.createUtxosToAccount(token, from, value, nw), 0);
+    return 0;
+  }
+
+  int addSwapOutput(
+      dynamic fromToken,
+      dynamic from,
+      int fromAmount,
+      dynamic toToken,
+      dynamic to,
+      int maxPrice,
+      int maxPricefraction) {
+    _tx.addBaseOutputAt(
+        DefiTransactionHelper.createPoolSwapOutput(fromToken, from, fromAmount,
+            toToken, to, maxPrice, maxPricefraction, network),
+        0);
+    return 0;
   }
 
   int addInput(dynamic txHash, int vout,
