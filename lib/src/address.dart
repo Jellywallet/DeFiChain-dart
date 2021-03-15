@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'models/networks.dart';
-import 'package:bs58check/bs58check.dart' as bs58check;
+import 'package:bs58check_dart/bs58check.dart' as bs58check;
 import 'package:bech32/bech32.dart';
 import 'payments/index.dart' show PaymentData;
 import 'payments/p2pkh.dart';
@@ -28,14 +28,10 @@ class Address {
     }
     if (decodeBase58 != null) {
       if (decodeBase58[0] == network.pubKeyHash) {
-        return P2PKH(data: PaymentData(address: address), network: network)
-            .data
-            .output;
+        return P2PKH(data: PaymentData(address: address), network: network).data.output;
       }
       if (decodeBase58[0] == network.scriptHash) {
-        return P2SH(data: PaymentData(address: address), network: network)
-            .data
-            .output;
+        return P2SH(data: PaymentData(address: address), network: network).data.output;
       }
       throw ArgumentError('Invalid version or Network mismatch');
     } else {
@@ -51,8 +47,7 @@ class Address {
         if (decodeBech32.version != 0) {
           throw ArgumentError('Invalid address version');
         }
-        var p2wpkh =
-            P2WPKH(data: PaymentData(address: address), network: network);
+        var p2wpkh = P2WPKH(data: PaymentData(address: address), network: network);
         return p2wpkh.data.output;
       }
     }

@@ -43,7 +43,7 @@ import 'package:pointycastle/digests/sha256.dart';
 // 导入 RIPEMD160Digest
 import 'package:pointycastle/digests/ripemd160.dart';
 // 导入 bs58check
-import 'package:bs58check/bs58check.dart' as bs58check;
+import 'package:bs58check_dart/bs58check.dart' as bs58check;
 
 Uint8List hash160(Uint8List buffer) {
   Uint8List _tmp = new SHA256Digest().process(buffer);

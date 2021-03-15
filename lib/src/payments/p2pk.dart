@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:bip32/src/utils/ecurve.dart' show isPoint;
+import 'package:bip32_defichain/src/utils/ecurve.dart' show isPoint;
 import '../models/networks.dart';
 import '../payments/index.dart' show PaymentData;
 import '../utils/constants/op.dart';

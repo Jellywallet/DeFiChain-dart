@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:defichaindart/src/utils/constants/op.dart';
@@ -14,8 +13,7 @@ class DefiTxTypes {
   static var CreateToken = 'T';
   static var MintToken = 'M';
   static var UpdateToken = 'N'; // previous type, only DAT flag triggers
-  static var UpdateTokenAny =
-      'n'; // new type of token's update with any flags/fields possible
+  static var UpdateTokenAny = 'n'; // new type of token's update with any flags/fields possible
 
   // dex orders - just not to overlap in future
 //    CreateOrder         = 'O',
@@ -80,9 +78,7 @@ class DefiTransactionHelper {
     return Uint8List.fromList(cscript);
   }
 
-  static DefiOutput createAccountToAccountOuput(
-      dynamic token, dynamic from, dynamic to, int toValue,
-      [NetworkType nw]) {
+  static DefiOutput createAccountToAccountOuput(dynamic token, dynamic from, dynamic to, int toValue, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.AccountToAccount);
 
     script.addAll(_createScript(from, nw));
@@ -94,9 +90,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAnyAccountToAccountOutput(
-      dynamic token, dynamic from, int fromValue, dynamic to, int toValue,
-      [NetworkType nw]) {
+  static DefiOutput createAnyAccountToAccountOutput(dynamic token, dynamic from, int fromValue, dynamic to, int toValue, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.AnyAccountsToAccounts);
 
     script.add(1); // add 1 from account
@@ -109,15 +103,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createPoolSwapOutput(
-      int fromToken,
-      String from,
-      int fromAmount,
-      int toToken,
-      String to,
-      int maxPrice,
-      int maxPricefraction,
-      [NetworkType nw]) {
+  static DefiOutput createPoolSwapOutput(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.PoolSwap);
 
     script.addAll(_createScript(from, nw));
@@ -126,7 +112,7 @@ class DefiTransactionHelper {
 
     script.addAll(_createScript(to, nw));
     script.addAll(_convertUint(toToken));
-    
+
     script.addAll(_convertInt64(maxPrice));
     script.addAll(_convertInt64(maxPricefraction));
 
@@ -142,14 +128,12 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAddPoolLiquidity(dynamic token, dynamic from,
-      int fromAmount, dynamic to, int toAmount, dynamic shareAddress,
-      [NetworkType nw]) {
-    var script = _prepare(DefiTxTypes.AccountToUtxos);
+  static DefiOutput createAddPoolLiquidity(int tokenA, String fromA, int fromAmountA, int tokenB, String fromB, int fromAmountB, String shareAddress, [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.AddPoolLiquidity);
 
     script.add(2);
-    script.addAll(_addAccount(token, from, fromAmount, nw));
-    script.addAll(_addAccount(token, to, toAmount, nw));
+    script.addAll(_addAccount(tokenA, fromA, fromAmountA, nw));
+    script.addAll(_addAccount(tokenB, fromB, fromAmountB, nw));
 
     script.addAll(_createScript(shareAddress, nw));
 
@@ -158,9 +142,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAccountToUtxos(
-      dynamic token, dynamic from, int value, int mintingOutputsStart,
-      [NetworkType nw]) {
+  static DefiOutput createAccountToUtxos(dynamic token, dynamic from, int value, int mintingOutputsStart, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.AccountToUtxos);
 
     script.addAll(_createScript(from, nw));
@@ -172,8 +154,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value,
-      [NetworkType nw]) {
+  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.UtxosToAccount);
 
     script.add(1); // add 1 from account
@@ -193,8 +174,7 @@ class DefiTransactionHelper {
     return Uint8List.fromList(script);
   }
 
-  static Uint8List _addAccount(
-      dynamic token, dynamic address, int value, NetworkType nw) {
+  static Uint8List _addAccount(dynamic token, dynamic address, int value, NetworkType nw) {
     var script = List<int>.empty(growable: true);
 
     script.addAll(_createScript(address, nw));

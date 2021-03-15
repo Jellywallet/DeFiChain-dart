@@ -1,20 +1,16 @@
 import 'dart:typed_data';
 import 'package:hex/hex.dart';
-import 'package:bip32/src/utils/ecurve.dart' as ecc;
+import 'package:bip32_defichain/src/utils/ecurve.dart' as ecc;
 import 'constants/op.dart';
 import 'push_data.dart' as pushdata;
 import 'check_types.dart';
 
-Map<int, String> REVERSE_OPS =
-    OPS.map((String string, int number) => MapEntry(number, string));
+Map<int, String> REVERSE_OPS = OPS.map((String string, int number) => MapEntry(number, string));
 final OP_INT_BASE = OPS['OP_RESERVED'];
 final ZERO = Uint8List.fromList([0]);
 
 bool isOPInt(dynamic value) {
-  return (value is num &&
-      (value == OPS['OP_0'] ||
-          (value >= OPS['OP_1'] && value <= OPS['OP_16']) ||
-          value == OPS['OP_1NEGATE']));
+  return (value is num && (value == OPS['OP_0'] || (value >= OPS['OP_1'] && value <= OPS['OP_16']) || value == OPS['OP_1NEGATE']));
 }
 
 bool isPushOnlyChunk(dynamic value) {

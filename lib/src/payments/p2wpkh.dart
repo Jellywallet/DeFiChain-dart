@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
-import 'package:bip32/src/utils/ecurve.dart' show isPoint;
+import 'package:bip32_defichain/src/utils/ecurve.dart' show isPoint;
 import 'package:bech32/bech32.dart';
 
 import '../crypto.dart';
@@ -21,11 +21,7 @@ class P2WPKH {
   }
 
   void _init() {
-    if (data.address == null &&
-        data.hash == null &&
-        data.output == null &&
-        data.pubkey == null &&
-        data.witness == null) throw ArgumentError('Not enough data');
+    if (data.address == null && data.hash == null && data.output == null && data.pubkey == null && data.witness == null) throw ArgumentError('Not enough data');
 
     data.name = 'p2wpkh';
 
@@ -38,9 +34,7 @@ class P2WPKH {
     }
 
     if (data.output != null) {
-      if (data.output.length != 22 ||
-          data.output[0] != OPS['OP_0'] ||
-          data.output[1] != 20) {
+      if (data.output.length != 22 || data.output[0] != OPS['OP_0'] || data.output[1] != 20) {
         throw ArgumentError('Output is invalid');
       }
       data.hash ??= data.output.sublist(2);

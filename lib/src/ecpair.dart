@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'dart:math';
-import 'package:bip32/src/utils/ecurve.dart' as ecc;
-import 'package:bip32/src/utils/wif.dart' as wif;
+import 'package:bip32_defichain/src/utils/ecurve.dart' as ecc;
+import 'package:bip32_defichain/src/utils/wif.dart' as wif;
 import 'models/networks.dart';
 
 class ECPair {
@@ -25,8 +25,7 @@ class ECPair {
     if (privateKey == null) {
       throw ArgumentError('Missing private key');
     }
-    return wif.encode(wif.WIF(
-        version: network.wif, privateKey: privateKey, compressed: compressed));
+    return wif.encode(wif.WIF(version: network.wif, privateKey: privateKey, compressed: compressed));
   }
 
   Uint8List sign(Uint8List hash) {
@@ -54,29 +53,24 @@ class ECPair {
         throw ArgumentError('Unknown network version');
       }
     }
-    return ECPair.fromPrivateKey(decoded.privateKey,
-        compressed: decoded.compressed, network: nw);
+    return ECPair.fromPrivateKey(decoded.privateKey, compressed: decoded.compressed, network: nw);
   }
-  factory ECPair.fromPublicKey(Uint8List publicKey,
-      {NetworkType network, bool compressed}) {
+  factory ECPair.fromPublicKey(Uint8List publicKey, {NetworkType network, bool compressed}) {
     if (!ecc.isPoint(publicKey)) {
       throw ArgumentError('Point is not on the curve');
     }
     return ECPair(null, publicKey, network: network, compressed: compressed);
   }
-  factory ECPair.fromPrivateKey(Uint8List privateKey,
-      {NetworkType network, bool compressed}) {
+  factory ECPair.fromPrivateKey(Uint8List privateKey, {NetworkType network, bool compressed}) {
     if (privateKey.length != 32) {
-      throw ArgumentError(
-          'Expected property privateKey of type Buffer(Length: 32)');
+      throw ArgumentError('Expected property privateKey of type Buffer(Length: 32)');
     }
     if (!ecc.isPrivate(privateKey)) {
       throw ArgumentError('Private key not in range [1, n)');
     }
     return ECPair(privateKey, null, network: network, compressed: compressed);
   }
-  factory ECPair.makeRandom(
-      {NetworkType network, bool compressed, Function rng}) {
+  factory ECPair.makeRandom({NetworkType network, bool compressed, Function rng}) {
     final rfunc = rng ?? _randomBytes;
     Uint8List d;
 //    int beginTime = DateTime.now().millisecondsSinceEpoch;

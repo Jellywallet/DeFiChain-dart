@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
-// import 'package:bip32/src/utils/ecurve.dart' show isPoint;
-import 'package:bs58check/bs58check.dart' as bs58check;
+// import 'package:bip32_defichain/src/utils/ecurve.dart' show isPoint;
+import 'package:bs58check_dart/bs58check.dart' as bs58check;
 
 import '../crypto.dart';
 import '../models/networks.dart';
@@ -20,11 +20,7 @@ class P2SH {
   void _init() {
     data.name = 'p2sh';
 
-    if (data.address == null &&
-        data.hash == null &&
-        data.output == null &&
-        data.redeem == null &&
-        data.input == null) throw ArgumentError('Not enough data');
+    if (data.address == null && data.hash == null && data.output == null && data.redeem == null && data.input == null) throw ArgumentError('Not enough data');
 
     if (data.address != null) {
       _getDataFromAddress(data.address);
@@ -36,10 +32,7 @@ class P2SH {
     }
 
     if (data.output != null) {
-      if (data.output.length != 23 ||
-          data.output[0] != OPS['OP_HASH160'] ||
-          data.output[1] != 0x14 ||
-          data.output[22] != OPS['OP_EQUAL']) {
+      if (data.output.length != 23 || data.output[0] != OPS['OP_HASH160'] || data.output[1] != 0x14 || data.output[22] != OPS['OP_EQUAL']) {
         throw ArgumentError('Output is invalid');
       }
       final hash = data.output.sublist(2, 22);
@@ -63,9 +56,7 @@ class P2SH {
     }
 
     if (data.witness != null) {
-      if (data.redeem != null &&
-          data.redeem.witness != null &&
-          !_stacksEqual(data.redeem.witness, data.witness)) {
+      if (data.redeem != null && data.redeem.witness != null && !_stacksEqual(data.redeem.witness, data.witness)) {
         throw ArgumentError('Witness and redeem.witness mismatch');
       }
     }
@@ -114,9 +105,7 @@ class P2SH {
 
       // match hash against other sources
       final hash2 = hash160(redeem.output);
-      if (data.hash != null &&
-          data.hash.isNotEmpty &&
-          (data.hash.toString() != hash2.toString())) {
+      if (data.hash != null && data.hash.isNotEmpty && (data.hash.toString() != hash2.toString())) {
         throw ArgumentError('Hash mismatch');
       }
     }
@@ -177,9 +166,7 @@ class P2SH {
 
   PaymentData _redeem() {
     final chunks = bscript.decompile(data.input);
-    final output = chunks[chunks.length - 1] is Uint8List
-        ? chunks[chunks.length - 1]
-        : null;
+    final output = chunks[chunks.length - 1] is Uint8List ? chunks[chunks.length - 1] : null;
     return PaymentData(
       output: output,
       input: bscript.compile(chunks.sublist(0, chunks.length - 1)),

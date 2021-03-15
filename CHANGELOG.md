@@ -1,3 +1,7 @@
+## 2.2.1+1
+- Add DeFiChain specific txs
+- Update packages
+
 ## 2.2.1
 - Fix analyze warning
 
