@@ -1,3 +1,6 @@
+## 2.3.0
+- Add Remove Liquidity 
+
 ## 2.2.1+5
 - Update packages
 

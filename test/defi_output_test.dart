@@ -40,5 +40,12 @@ void main() {
       expect(hexOut,
           "6a4c68446654786c0217a9141084ef98bacfecbc9f140496b26516ae55d79bfa870100000000a08601000000000017a9141084ef98bacfecbc9f140496b26516ae55d79bfa8701010000007a5265e60100000017a9141084ef98bacfecbc9f140496b26516ae55d79bfa87");
     });
+
+    test("create removePoolLiquidity output", () {
+      var defiOutput = DefiTransactionHelper.createRemovePoolLiquidity("dVTLp4iqkp7P3fDf2PqtDKap21hGQaLMEa", 5, 38207852, defichain);
+      var hexOut = HEX.encode(defiOutput.script);
+
+      expect(hexOut, "6a26446654787217a914afe582e10c94c932671ffc83e7e2280e4cd9a10687056c01470200000000");
+    });
   });
 }

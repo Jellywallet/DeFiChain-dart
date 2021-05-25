@@ -142,6 +142,19 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
+  static DefiOutput createRemovePoolLiquidity(String from, int token, int value, [NetworkType nw]) {
+    var script = _prepare(DefiTxTypes.RemovePoolLiquidity);
+
+    script.addAll(_createScript(from, nw));
+
+    script.addAll(_convertUint(token));
+    script.addAll(_convertInt64(value));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
   static DefiOutput createAccountToUtxos(dynamic token, dynamic from, int value, int mintingOutputsStart, [NetworkType nw]) {
     var script = _prepare(DefiTxTypes.AccountToUtxos);
 
