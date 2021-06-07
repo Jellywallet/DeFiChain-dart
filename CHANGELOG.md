@@ -1,5 +1,5 @@
 ## 2.3.0
-- Add Remove Liquidity 
+- Add Remove Liquidity
 
 ## 2.2.1+5
 - Update packages
@@ -19,6 +19,8 @@
 
 ## 2.1.0
 - Release bitcoindart package
+## 2.0.2
+- Add support for optional 'noStrict' parameter in Transaction.fromBuffer
 
 ## 2.0.1
 - Add payments/index.dart to lib exports

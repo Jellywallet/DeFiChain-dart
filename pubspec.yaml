@@ -14,7 +14,7 @@ dependencies:
   bs58check_dart: ^2.0.0+1
   meta: ^1.2.4
   crypto: ^3.0.0
-  
+
 dev_dependencies:
   test: ^1.0.0
   pedantic: ^1.9.0
