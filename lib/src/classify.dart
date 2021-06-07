@@ -17,7 +17,7 @@ const SCRIPT_TYPES = {
   'WITNESS_COMMITMENT': 'witnesscommitment'
 };
 
-String classifyOutput(Uint8List script) {
+String? classifyOutput(Uint8List script) {
   if (witness_pubkey_hash.outputCheck(script)) return SCRIPT_TYPES['P2WPKH'];
   if (pubkeyhash.outputCheck(script)) return SCRIPT_TYPES['P2PKH'];
   if (scripthash.outputCheck(script)) return SCRIPT_TYPES['P2SH'];
@@ -26,7 +26,7 @@ String classifyOutput(Uint8List script) {
   return SCRIPT_TYPES['NONSTANDARD'];
 }
 
-String classifyInput(Uint8List script, bool allowIncomplete) {
+String? classifyInput(Uint8List script, bool allowIncomplete) {
   final chunks = bscript.decompile(script);
   if (chunks == null) throw ArgumentError('Invalid script');
   if (pubkeyhash.inputCheck(chunks)) return SCRIPT_TYPES['P2PKH'];
@@ -37,7 +37,7 @@ String classifyInput(Uint8List script, bool allowIncomplete) {
   return SCRIPT_TYPES['NONSTANDARD'];
 }
 
-String classifyWitness(List<Uint8List> script) {
+String? classifyWitness(List<Uint8List?>? script) {
   final chunks = bscript.decompile(script);
   if (chunks == null) throw ArgumentError('Invalid script');
   if (witness_pubkey_hash.inputCheck(chunks)) return SCRIPT_TYPES['P2WPKH'];

@@ -11,7 +11,7 @@ class PBKDF2 {
   final int desiredKeyLength;
   final String saltPrefix = "mnemonic";
 
-  PBKDF2KeyDerivator _derivator;
+  late PBKDF2KeyDerivator _derivator;
 
   PBKDF2({
     this.blockLength = 128,
@@ -23,7 +23,7 @@ class PBKDF2 {
   }
 
   Uint8List process(String mnemonic, {passphrase: ""}) {
-    Uint8List salt = utf8.encode(saltPrefix + passphrase);
+    Uint8List salt = Uint8List.fromList(utf8.encode(saltPrefix + passphrase));
     _derivator.reset();
     _derivator
         .init(new Pbkdf2Parameters(salt, iterationCount, desiredKeyLength));

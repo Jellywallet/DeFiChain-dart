@@ -10,7 +10,7 @@ void main() {
           "cNpueJjp8geQJut28fDyUD8e5zoyctHxj9GE8rTbQXwiEwLo1kq4",
           network: network);
 
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
       final redeemScript = p2wpkh.output;
 
       final txb = TransactionBuilder(network: network);

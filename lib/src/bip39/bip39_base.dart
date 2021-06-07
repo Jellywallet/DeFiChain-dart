@@ -61,13 +61,13 @@ String entropyToMnemonic(String entropyString) {
   if (entropy.length % 4 != 0) {
     throw ArgumentError(_INVALID_ENTROPY);
   }
-  final entropyBits = _bytesToBinary(entropy);
-  final checksumBits = _deriveChecksumBits(entropy);
+  final entropyBits = _bytesToBinary(Uint8List.fromList(entropy));
+  final checksumBits = _deriveChecksumBits(Uint8List.fromList(entropy));
   final bits = entropyBits + checksumBits;
   final regex = new RegExp(r".{1,11}", caseSensitive: false, multiLine: false);
   final chunks = regex.allMatches(bits).map((match) => match.group(0)).toList(growable: false);
   List<String> wordlist = WORDLIST;
-  String words = chunks.map((binary) => wordlist[_binaryToByte(binary)]).join(' ');
+  String words = chunks.map((binary) => wordlist[_binaryToByte(binary!)]).join(' ');
   return words;
 }
 
@@ -112,7 +112,7 @@ String mnemonicToEntropy(mnemonic) {
 
   // calculate the checksum and compare
   final regex = RegExp(r".{1,8}");
-  final entropyBytes = Uint8List.fromList(regex.allMatches(entropyBits).map((match) => _binaryToByte(match.group(0))).toList(growable: false));
+  final entropyBytes = Uint8List.fromList(regex.allMatches(entropyBits).map((match) => _binaryToByte(match.group(0)!)).toList(growable: false));
   if (entropyBytes.length < 16) {
     throw StateError(_INVALID_ENTROPY);
   }

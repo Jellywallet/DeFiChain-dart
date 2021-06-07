@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:defichaindart/src/models/networks.dart';
 import 'package:defichaindart/src/payments/index.dart' show PaymentData;
 import 'package:defichaindart/src/payments/p2pkh.dart';
@@ -31,7 +33,7 @@ void main() {
     });
     test('can create a BIP32, bitcoin, account 0, external address', () {
       const path = "m/0'/0/0";
-      final root = bip32.BIP32.fromSeed(HEX.decode('dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'));
+      final root = bip32.BIP32.fromSeed(Uint8List.fromList(HEX.decode('dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd')));
       final child1 = root.derivePath(path);
       // option 2, manually
       final child1b = root.deriveHardened(0).derive(0).derive(0);
@@ -39,7 +41,7 @@ void main() {
       expect(getAddress(child1b), '1JHyB1oPXufr4FXkfitsjgNB5yRY9jAaa7');
     });
     test('can create a BIP44, bitcoin, account 0, external address', () {
-      final root = bip32.BIP32.fromSeed(HEX.decode('dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'));
+      final root = bip32.BIP32.fromSeed(Uint8List.fromList(HEX.decode('dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd')));
       final child1 = root.derivePath("m/44'/0'/0'/0/0");
       // option 2, manually
       final child1b = root.deriveHardened(44).deriveHardened(0).deriveHardened(0).derive(0).derive(0);
@@ -64,6 +66,6 @@ void main() {
   });
 }
 
-String getAddress(node, [network]) {
-  return P2PKH(data: PaymentData(pubkey: node.publicKey), network: network).data.address;
+String? getAddress(node, [network]) {
+  return P2PKH(data: PaymentData(pubkey: node.publicKey), network: network).data!.address;
 }

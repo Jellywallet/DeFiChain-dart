@@ -9,11 +9,11 @@ import 'package:defichaindart/src/transaction.dart';
 void main() {
   final fixtures = json.decode(
       File('test/fixtures/transaction.json').readAsStringSync(encoding: utf8));
-  final valids = (fixtures['valid'] as List<dynamic>);
+  final valids = (fixtures['valid'] as List<dynamic>?);
 
   group('Transaction', () {
     group('fromBuffer/fromHex', () {
-      valids.forEach(importExport);
+      valids!.forEach(importExport);
       (fixtures['hashForSignature'] as List<dynamic>).forEach(importExport);
       (fixtures['invalid']['fromBuffer'] as List<dynamic>).forEach((f) {
         test('throws on ${f['exception']}', () {
@@ -33,7 +33,7 @@ void main() {
     });
 
     group('toBuffer/toHex', () {
-      valids.forEach((f) {
+      valids!.forEach((f) {
         test('exports ${f['description']} (${f['id']})', () {
           final actual = fromRaw(f['raw'], false);
           expect(actual.toHex(), f['hex']);
@@ -49,7 +49,7 @@ void main() {
 
     group('weight/virtualSize', () {
       test('computes virtual size', () {
-        valids.forEach((f) {
+        valids!.forEach((f) {
           final txHex =
               (f['whex'] != null && f['whex'] != '') ? f['whex'] : f['hex'];
           final transaction = Transaction.fromHex(txHex);
@@ -59,7 +59,7 @@ void main() {
     });
 
     group('addInput', () {
-      var prevTxHash;
+      late var prevTxHash;
       setUp(() {
         prevTxHash = HEX.decode(
             'ffffffff00ffff000000000000000000000000000000000000000000101010ff');
@@ -72,7 +72,7 @@ void main() {
       test('defaults to empty script, and 0xffffffff SEQUENCE number', () {
         final tx = Transaction();
         tx.addInput(prevTxHash, 0);
-        expect(tx.ins[0].script.length, 0);
+        expect(tx.ins[0].script!.length, 0);
         expect(tx.ins[0].sequence, 0xffffffff);
       });
       (fixtures['invalid']['addInput'] as List<dynamic>).forEach((f) {
@@ -80,7 +80,7 @@ void main() {
           final tx = Transaction();
           final hash = HEX.decode(f['hash']);
           try {
-            expect(tx.addInput(hash, f['index']), isArgumentError);
+            expect(tx.addInput(Uint8List.fromList(hash), f['index']), isArgumentError);
           } catch (err) {
             expect((err as ArgumentError).message, f['exception']);
           }
@@ -105,7 +105,7 @@ void main() {
         });
       }
 
-      valids.forEach(verify);
+      valids!.forEach(verify);
     });
 
     group('isCoinbase', () {
@@ -118,7 +118,7 @@ void main() {
         });
       }
 
-      valids.forEach(verify);
+      valids!.forEach(verify);
     });
 
     group('hashForSignature', () {
@@ -160,11 +160,11 @@ Transaction fromRaw(raw, [isWitness]) {
     } else if (txIn['script'] != null && txIn['script'] != '') {
       scriptSig = bscript.fromASM(txIn['script']);
     }
-    tx.addInput(txHash, txIn['index'], txIn['sequence'], scriptSig);
+    tx.addInput(Uint8List.fromList(txHash), txIn['index'], txIn['sequence'], scriptSig);
 
     if (isWitness) {
       var witness = (txIn['witness'] as List<dynamic>)
-          .map((e) => HEX.decode(e.toString()) as Uint8List)
+          .map((e) => Uint8List.fromList(HEX.decode(e.toString())))
           .toList();
       tx.setWitness(indx, witness);
     }

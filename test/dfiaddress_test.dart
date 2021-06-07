@@ -53,7 +53,7 @@ void main() {
                             network: network)
                         .data),
                 network: network)
-            .data
+            .data!
             .address;
 
         expect(address, 'taNbqooKizHpDhxhRaunuoK1T6aKCX3TnF');
@@ -72,7 +72,7 @@ void main() {
                             network: network)
                         .data),
                 network: network)
-            .data
+            .data!
             .address;
 
         expect(address, 'dHXgRgUNk8gX9EfQVeFgV2y7XvnUEoFNnn');

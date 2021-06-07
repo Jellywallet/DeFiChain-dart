@@ -23,11 +23,11 @@ bool inputCheck(List<dynamic> chunks, bool allowIncomplete) {
   // is witness?
   if (chunks.length == 1) {
     // TODO p2wsh
-    return p2wpkh.outputCheck(bscript.compile(redeemScriptChunks));
+    return p2wpkh.outputCheck(bscript.compile(redeemScriptChunks)!);
   }
 
   if (p2pkh.inputCheck(scriptSigChunks) &&
-      p2pkh.outputCheck(bscript.compile(redeemScriptChunks))) {
+      p2pkh.outputCheck(bscript.compile(redeemScriptChunks)!)) {
     return true;
   }
 
@@ -35,7 +35,7 @@ bool inputCheck(List<dynamic> chunks, bool allowIncomplete) {
 }
 
 bool outputCheck(Uint8List script) {
-  final buffer = bscript.compile(script);
+  final buffer = bscript.compile(script)!;
   return buffer.length == 23 &&
       buffer[0] == OPS['OP_HASH160'] &&
       buffer[1] == 0x14 &&

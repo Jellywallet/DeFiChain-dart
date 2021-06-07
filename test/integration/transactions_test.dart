@@ -62,7 +62,7 @@ void main() {
     test('can create a Transaction, w/ a P2SH(P2WPKH) input', () {
       final alice = ECPair.fromWIF(
           'L2FroWqrUgsPpTMhpXcAFnVDLPTToDbveh3bhDaU4jhe7Cw6YujN');
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
       final redeemScript = p2wpkh.output;
 
       final txb = TransactionBuilder();
@@ -89,7 +89,7 @@ void main() {
       final p2wpkh = P2WPKH(
               data: PaymentData(pubkey: alice.publicKey),
               network: networks.testnet)
-          .data;
+          .data!;
       final txb = TransactionBuilder(network: networks.testnet);
       txb.setVersion(1);
       txb.addInput(

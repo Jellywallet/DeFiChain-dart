@@ -35,7 +35,7 @@ void main() {
       final alice = ECPair.fromWIF(
           'cPx3xUD441mriaUkA7t3Q4jSen7rHX5Za3942QrBVyCasknqy7YK',
           network: networks.defichain_testnet);
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
 
       final txb = TransactionBuilder(network: networks.defichain_testnet);
 
@@ -66,7 +66,7 @@ void main() {
       final alice = ECPair.fromWIF(
           'cPx3xUD441mriaUkA7t3Q4jSen7rHX5Za3942QrBVyCasknqy7YK',
           network: networks.defichain_testnet);
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
 
       final txb = TransactionBuilder(network: networks.defichain_testnet);
       final fee = 500;
@@ -94,7 +94,7 @@ void main() {
       final alice = ECPair.fromWIF(
           'cPx3xUD441mriaUkA7t3Q4jSen7rHX5Za3942QrBVyCasknqy7YK',
           network: networks.defichain_testnet);
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
 
       final txb = TransactionBuilder(network: networks.defichain_testnet);
       final fee = 500;
@@ -124,7 +124,7 @@ void main() {
       final alice = ECPair.fromWIF(
           'cNpueJjp8geQJut28fDyUD8e5zoyctHxj9GE8rTbQXwiEwLo1kq4',
           network: networks.defichain_testnet);
-      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
 
       final txb = TransactionBuilder(network: networks.defichain_testnet);
       final fee = 500;
