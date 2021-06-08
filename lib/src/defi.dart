@@ -64,12 +64,12 @@ class DefiTransactionHelper {
   static Uint8List _postpare(Uint8List defiScript) {
     var cscript = new List<int>.empty(growable: true);
 
-    cscript.add(OPS["OP_RETURN"]);
+    cscript.add(OPS["OP_RETURN"]!);
 
-    if (defiScript.length < OPS["OP_PUSHDATA1"]) {
+    if (defiScript.length < OPS["OP_PUSHDATA1"]!) {
       cscript.add(defiScript.length);
     } else if (defiScript.length <= 0xff) {
-      cscript.add(OPS["OP_PUSHDATA1"]);
+      cscript.add(OPS["OP_PUSHDATA1"]!);
       cscript.add(defiScript.length);
     }
 
@@ -78,7 +78,7 @@ class DefiTransactionHelper {
     return Uint8List.fromList(cscript);
   }
 
-  static DefiOutput createAccountToAccountOuput(dynamic token, dynamic from, dynamic to, int toValue, [NetworkType nw]) {
+  static DefiOutput createAccountToAccountOuput(dynamic token, dynamic from, dynamic to, int toValue, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AccountToAccount);
 
     script.addAll(_createScript(from, nw));
@@ -90,7 +90,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAnyAccountToAccountOutput(dynamic token, dynamic from, int fromValue, dynamic to, int toValue, [NetworkType nw]) {
+  static DefiOutput createAnyAccountToAccountOutput(dynamic token, dynamic from, int fromValue, dynamic to, int toValue, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AnyAccountsToAccounts);
 
     script.add(1); // add 1 from account
@@ -103,7 +103,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createPoolSwapOutput(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, [NetworkType nw]) {
+  static DefiOutput createPoolSwapOutput(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.PoolSwap);
 
     script.addAll(_createScript(from, nw));
@@ -128,7 +128,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAddPoolLiquidity(int tokenA, String fromA, int fromAmountA, int tokenB, String fromB, int fromAmountB, String shareAddress, [NetworkType nw]) {
+  static DefiOutput createAddPoolLiquidity(int tokenA, String fromA, int fromAmountA, int tokenB, String fromB, int fromAmountB, String shareAddress, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AddPoolLiquidity);
 
     script.add(2);
@@ -142,7 +142,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createRemovePoolLiquidity(String from, int token, int value, [NetworkType nw]) {
+  static DefiOutput createRemovePoolLiquidity(String from, int token, int value, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.RemovePoolLiquidity);
 
     script.addAll(_createScript(from, nw));
@@ -155,7 +155,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAccountToUtxos(dynamic token, dynamic from, int value, int mintingOutputsStart, [NetworkType nw]) {
+  static DefiOutput createAccountToUtxos(dynamic token, dynamic from, int value, int mintingOutputsStart, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AccountToUtxos);
 
     script.addAll(_createScript(from, nw));
@@ -167,7 +167,7 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value, [NetworkType nw]) {
+  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.UtxosToAccount);
 
     script.add(1); // add 1 from account
@@ -178,16 +178,16 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), value);
   }
 
-  static Uint8List _createScript(dynamic address, NetworkType nw) {
+  static Uint8List _createScript(dynamic address, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
-    var scriptPubKey = Address.addressToOutputScript(address, nw);
+    var scriptPubKey = Address.addressToOutputScript(address, nw)!;
     script.add(scriptPubKey.length);
     script.addAll(scriptPubKey);
 
     return Uint8List.fromList(script);
   }
 
-  static Uint8List _addAccount(dynamic token, dynamic address, int value, NetworkType nw) {
+  static Uint8List _addAccount(dynamic token, dynamic address, int value, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
 
     script.addAll(_createScript(address, nw));

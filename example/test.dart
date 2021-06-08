@@ -11,7 +11,7 @@ import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:defichaindart/src/models/networks.dart' as networks;
 import 'package:defichaindart/src/payments/p2pkh.dart' show P2PKH;
 import 'package:defichaindart/src/payments/index.dart' show PaymentData;
-import 'package:bs58check_dart/bs58check.dart' as bs58check;
+import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:defichaindart/src/ecpair.dart' show ECPair;
 import 'package:defichaindart/src/transaction_builder.dart';
 
@@ -32,9 +32,9 @@ Uint8List hash160(Uint8List buffer) {
 void createAddressInOriginalWay() {
   final keyPair = ECPair.makeRandom(rng: rng);
   print(keyPair.publicKey);
-  print(keyPair.publicKey.length);
+  print(keyPair.publicKey!.length);
   // pubkey：Uint8List 格式的公钥
-  var hash = hash160(keyPair.publicKey);
+  var hash = hash160(keyPair.publicKey!);
   print(hash);
   print(hash.length);
   final payload = Uint8List(21);
@@ -48,7 +48,8 @@ void createAddressInOriginalWay() {
 dynamic createAddress(Function rng) {
   final keyPair = ECPair.makeRandom(rng: rng);
   final wif = keyPair.toWIF();
-  final address = P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data.address;
+  final address =
+      P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data!.address;
   print(wif);
   print(address);
 
@@ -60,13 +61,17 @@ dynamic createAddress(Function rng) {
 
 // 创建交易
 void createTransaction() {
-  final alice = ECPair.fromWIF('L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr');
-  final address2 = P2PKH(data: PaymentData(pubkey: alice.publicKey)).data.address;
+  final alice =
+      ECPair.fromWIF('L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr');
+  final address2 =
+      P2PKH(data: PaymentData(pubkey: alice.publicKey)).data!.address;
   print(address2);
   final txb = TransactionBuilder();
 
   txb.setVersion(2);
-  txb.addInput('7d067b4a697a09d2c3cff7d4d9506c9955e93bff41bf82d439da7d030382bc3e', 0); // Alice's previous transaction output, has 15000 satoshis
+  txb.addInput(
+      '7d067b4a697a09d2c3cff7d4d9506c9955e93bff41bf82d439da7d030382bc3e',
+      0); // Alice's previous transaction output, has 15000 satoshis
   txb.addOutput('1KRMKfeZcmosxALVYESdPNez1AP1mEtywp', 80000);
   txb.addOutput('1KRMKfeZcmosxALVYESdPNez1AP1mEtywp', 80000);
   // (in)90000 - (out)80000 = (fee)10000, this is the miner fee
@@ -83,7 +88,10 @@ Map<String, dynamic> createTestnetAddress(Function rng) {
   final testnet = networks.testnet;
   final keyPair = ECPair.makeRandom(network: testnet, rng: rng);
   final wif = keyPair.toWIF();
-  final address = P2PKH(data: PaymentData(pubkey: keyPair.publicKey), network: testnet).data.address;
+  final address =
+      P2PKH(data: PaymentData(pubkey: keyPair.publicKey), network: testnet)
+          .data!
+          .address;
   print(wif);
   print(address);
 
@@ -94,13 +102,19 @@ Map<String, dynamic> createTestnetAddress(Function rng) {
 }
 
 void createTestnetTransaction(String txHash) {
-  final keybag = ECPair.fromWIF('cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5MHjaqzhL42Cse1T');
-  final address = P2PKH(data: PaymentData(pubkey: keybag.publicKey), network: networks.testnet).data.address;
+  final keybag =
+      ECPair.fromWIF('cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5MHjaqzhL42Cse1T');
+  final address = P2PKH(
+          data: PaymentData(pubkey: keybag.publicKey),
+          network: networks.testnet)
+      .data!
+      .address;
   print(address);
   final txb = TransactionBuilder(network: networks.testnet);
 
   txb.setVersion(1);
-  txb.addInput(txHash, 0); // Keybag's previous transaction output, has 15000 satoshis
+  txb.addInput(
+      txHash, 0); // Keybag's previous transaction output, has 15000 satoshis
   txb.addOutput('moTUMqKxSXrGeF8ktYcawLLVr6Mg46TQdQ', 20000000);
   txb.addOutput('msXCejAWLAPZym8JK2516x7gbu3giKWUP3', 10000000 - 150);
   // (in)90000 - (out)80000 = (fee)10000, this is the miner fee
@@ -123,7 +137,8 @@ void main() {
   // wif: cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5MHjaqzhL42Cse1T
   // address: msXCejAWLAPZym8JK2516x7gbu3giKWUP3
 
-  createTestnetTransaction('f752b9c61ed56d61049bf24317c683762cdf66ef91f9562d234cca18b9503aee');
+  createTestnetTransaction(
+      'f752b9c61ed56d61049bf24317c683762cdf66ef91f9562d234cca18b9503aee');
 
   // createTransaction();
 }

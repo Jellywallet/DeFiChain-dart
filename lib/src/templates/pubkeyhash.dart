@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import '../utils/script.dart' as bscript;
 import '../utils/constants/op.dart';
 
-bool inputCheck(List<dynamic> chunks) {
+bool inputCheck(List<dynamic>? chunks) {
   return chunks != null &&
       chunks.length == 2 &&
       bscript.isCanonicalScriptSignature(chunks[0]) &&
@@ -10,7 +10,7 @@ bool inputCheck(List<dynamic> chunks) {
 }
 
 bool outputCheck(Uint8List script) {
-  final buffer = bscript.compile(script);
+  final buffer = bscript.compile(script)!;
   return buffer.length == 25 &&
       buffer[0] == OPS['OP_DUP'] &&
       buffer[1] == OPS['OP_HASH160'] &&

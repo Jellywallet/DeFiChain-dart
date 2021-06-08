@@ -10,7 +10,7 @@ import 'dart:convert';
 import 'package:hex/hex.dart';
 import 'dart:typed_data';
 
-dynamic getPayment({String type, dynamic data, dynamic network}) {
+dynamic getPayment({String? type, dynamic data, dynamic network}) {
   switch (type) {
     case 'p2pkh':
       return P2PKH(data: data, network: network);
@@ -61,7 +61,7 @@ void main() {
     if (fixtures['dynamic'] == null) return;
 
     group('(dynamic case)', () {
-      final depends = fixtures['dynamic']['depends'] as Map<String, dynamic>;
+      final depends = fixtures['dynamic']['depends'] as Map<String, dynamic>?;
       final details = fixtures['dynamic']['details'] as List<dynamic>;
 
       details.forEach((f) {
@@ -73,7 +73,7 @@ void main() {
           });
         }
 
-        depends.forEach((key, depend) {
+        depends!.forEach((key, depend) {
           if (disabled[key] == true) return;
 
           final dependencies = depend as List;
@@ -83,7 +83,7 @@ void main() {
               dependency = [dependency];
             }
 
-            PaymentData args;
+            PaymentData? args;
             dependency.forEach((d) {
               args = _from(d, detail, args);
             });
@@ -111,7 +111,7 @@ PaymentData _preformPaymentData(dynamic x) {
   final hash = x['hash'] != null ? HEX.decode(x['hash']) : null;
   var input;
   if (x['inputHex'] is String) {
-    input = HEX.decode(x['inputHex']) as Uint8List;
+    input = Uint8List.fromList(HEX.decode(x['inputHex']));
   }
   if (x['input'] != null) {
     input = bscript.fromASM(x['input']);
@@ -119,7 +119,7 @@ PaymentData _preformPaymentData(dynamic x) {
 
   final witness = x['witness'] != null
       ? (x['witness'] as List<dynamic>)
-          .map((e) => HEX.decode(e.toString()) as Uint8List)
+          .map((e) => Uint8List.fromList(HEX.decode(e.toString())))
           .toList()
       : null;
   final output = x['output'] != null
@@ -128,7 +128,7 @@ PaymentData _preformPaymentData(dynamic x) {
   final pubkey = x['pubkey'] != null ? HEX.decode(x['pubkey']) : null;
   final signature = x['signature'] != null ? HEX.decode(x['signature']) : null;
 
-  PaymentData redeem;
+  PaymentData? redeem;
 
   if (x['redeem'] != null) {
     redeem = PaymentData();
@@ -141,17 +141,17 @@ PaymentData _preformPaymentData(dynamic x) {
     }
     if (x['redeem']['witness'] is List) {
       redeem.witness = (x['redeem']['witness'] as List<dynamic>)
-          .map((e) => HEX.decode(e.toString()) as Uint8List)
+          .map((e) => Uint8List.fromList(HEX.decode(e.toString())))
           .toList();
     }
   }
   return PaymentData(
       address: address,
-      hash: hash,
+      hash: hash as Uint8List?,
       input: input,
-      output: output,
-      pubkey: pubkey,
-      signature: signature,
+      output: output as Uint8List?,
+      pubkey: pubkey as Uint8List?,
+      signature: signature as Uint8List?,
       witness: witness,
       redeem: redeem);
 }
@@ -166,62 +166,62 @@ networks.NetworkType _preformNetwork(dynamic x) {
   return networks.bitcoin;
 }
 
-PaymentData _from(String path, PaymentData paymentData, [PaymentData result]) {
+PaymentData _from(String path, PaymentData? paymentData, [PaymentData? result]) {
   final paths = path.split('.');
 
   result = result ?? PaymentData();
 
-  var r = result;
+  PaymentData? r = result;
 
   paths.asMap().forEach((i, k) {
     if (i < paths.length - 1) {
-      r[k] = r[k] ?? PaymentData();
+      r![k] = r![k] ?? PaymentData();
 
       // recurse
-      r = r[k];
-      paymentData = paymentData[k];
+      r = r![k];
+      paymentData = paymentData![k];
     } else {
-      r[k] = paymentData[k];
+      r![k] = paymentData![k];
     }
   });
 
   return result;
 }
 
-void _equateBase(PaymentData paymentData, dynamic expected) {
+void _equateBase(PaymentData? paymentData, dynamic expected) {
   if (expected['output'] != null) {
-    expect(tryASM(paymentData.output), tryASM(expected['output']));
+    expect(tryASM(paymentData!.output), tryASM(expected['output']));
   }
   if (expected['input'] != null) {
-    expect(tryASM(paymentData.input), tryASM(expected['input']));
+    expect(tryASM(paymentData!.input), tryASM(expected['input']));
   }
   if (expected['witness'] != null) {
-    expect(tryHex(paymentData.witness), tryHex(expected['witness']));
+    expect(tryHex(paymentData!.witness), tryHex(expected['witness']));
   }
 }
 
-void _equate(PaymentData paymentData, dynamic expected,
-    [PaymentData arguments]) {
+void _equate(PaymentData? paymentData, dynamic expected,
+    [PaymentData? arguments]) {
   _equateBase(paymentData, expected);
 
   if (expected['redeem'] != null) {
-    _equateBase(paymentData.redeem, expected['redeem']);
+    _equateBase(paymentData!.redeem, expected['redeem']);
   }
 
   if (expected['name'] != null) {
-    expect(paymentData.name, expected['name']);
+    expect(paymentData!.name, expected['name']);
   }
   if (expected['address'] != null) {
-    expect(paymentData.address, expected['address']);
+    expect(paymentData!.address, expected['address']);
   }
   if (expected['hash'] != null) {
-    expect(tryHex(paymentData.hash), tryHex(expected['hash']));
+    expect(tryHex(paymentData!.hash), tryHex(expected['hash']));
   }
   if (expected['pubkey'] != null) {
-    expect(tryHex(paymentData.pubkey), tryHex(expected['pubkey']));
+    expect(tryHex(paymentData!.pubkey), tryHex(expected['pubkey']));
   }
   if (expected['signature'] != null) {
-    expect(tryHex(paymentData.signature), tryHex(expected['signature']));
+    expect(tryHex(paymentData!.signature), tryHex(expected['signature']));
   }
 }
 

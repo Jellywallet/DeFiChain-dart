@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:defichaindart/src/models/networks.dart' as networks;
 import 'package:defichaindart/src/ecpair.dart' show ECPair;
 import 'package:defichaindart/src/payments/index.dart' show PaymentData;
@@ -24,22 +26,22 @@ void main() {
     test('can generate a random address', () {
       final keyPair = ECPair.makeRandom(rng: rng);
       final address =
-          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data.address;
+          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data!.address;
       expect(address, '1F5VhMHukdnUES9kfXqzPzMeF1GPHKiF64');
     });
     test('can generate an address from a SHA256 hash', () {
       final hash =
-          SHA256Digest().process(utf8.encode('correct horse battery staple'));
+          SHA256Digest().process(Uint8List.fromList(utf8.encode('correct horse battery staple')));
       final keyPair = ECPair.fromPrivateKey(hash);
       final address =
-          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data.address;
+          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data!.address;
       expect(address, '1C7zdTfnkzmr13HfA2vNm5SJYRK6nEKyq8');
     });
     test('can import an address via WIF', () {
       final keyPair = ECPair.fromWIF(
           'Kxr9tQED9H44gCmp6HAdmemAzU3n84H3dGkuWTKvE23JgHMW8gct');
       final address =
-          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data.address;
+          P2PKH(data: PaymentData(pubkey: keyPair.publicKey)).data!.address;
       expect(address, '19AAjaTUbRjQCMuVczepkoPswiZRhjtg31');
     });
     test('can generate a Testnet address', () {
@@ -48,7 +50,7 @@ void main() {
       final wif = keyPair.toWIF();
       final address =
           P2PKH(data: PaymentData(pubkey: keyPair.publicKey), network: testnet)
-              .data
+              .data!
               .address;
       expect(address, 'mubSzQNtZfDj1YdNP6pNDuZy6zs6GDn61L');
       expect(wif, 'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqms5tXnzNsrr');
@@ -58,7 +60,7 @@ void main() {
       final wif = keyPair.toWIF();
       final address =
           P2PKH(data: PaymentData(pubkey: keyPair.publicKey), network: litecoin)
-              .data
+              .data!
               .address;
       expect(address, 'LZJSxZbjqJ2XVEquqfqHg1RQTDdfST5PTn');
       expect(wif, 'T7A4PUSgTDHecBxW1ZiYFrDNRih2o7M8Gf9xpoCgudPF9gDiNvuS');
@@ -67,7 +69,7 @@ void main() {
       final keyPair = ECPair.fromWIF(
           'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn');
       final address =
-          P2WPKH(data: PaymentData(pubkey: keyPair.publicKey)).data.address;
+          P2WPKH(data: PaymentData(pubkey: keyPair.publicKey)).data!.address;
       expect(address, 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4');
     });
     test('can generate a SegWit Testnets address', () {
@@ -76,7 +78,7 @@ void main() {
           'cPaJYBMDLjQp5gSUHnBfhX4Rgj95ekBS6oBttwQLw3qfsKKcDfuB');
       final address =
           P2WPKH(data: PaymentData(pubkey: keyPair.publicKey), network: testnet)
-              .data
+              .data!
               .address;
       expect(address, 'tb1qgmp0h7lvexdxx9y05pmdukx09xcteu9sx2h4ya');
     });
@@ -88,7 +90,7 @@ void main() {
               data: PaymentData(
                   redeem: P2WPKH(data: PaymentData(pubkey: keyPair.publicKey))
                       .data))
-          .data
+          .data!
           .address;
       expect(address, '3JvL6Ymt8MVWiCNHC7oWU6nLeHNJKLZGLN');
     });
