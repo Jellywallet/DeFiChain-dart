@@ -1,6 +1,6 @@
 name: defichaindart
 description: A dart DefiChain library for Flutter. BIP32, BIP39, P2PKH integration.
-version: 3.0.0
+version: 3.0.0+1
 homepage: https://github.com/DeFiCh-WalletApp/DeFiChain-dart
 
 environment:
@@ -17,5 +17,5 @@ dependencies:
   collection: ^1.15.0
 
 dev_dependencies:
-  test: ^1.17.5
+  test: ^1.0.0
   pedantic: ^1.9.0

@@ -1,3 +1,6 @@
+## 3.0.0+1
+- Downgrade test so 1.0
+
 ## 3.0.0
 - Add null safety
 
