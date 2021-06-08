@@ -1,3 +1,6 @@
+## 3.0.0+2
+- Downgrade meta to 1.3.0
+
 ## 3.0.0+1
 - Downgrade test so 1.0
 
