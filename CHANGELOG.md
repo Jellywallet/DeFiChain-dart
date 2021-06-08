@@ -1,3 +1,9 @@
+## 3.0.0
+- Add null safety
+
+## 2.3.1+1
+- Update reference
+
 ## 2.3.0
 - Add Remove Liquidity
 
