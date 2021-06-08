@@ -123,6 +123,10 @@ class TransactionBuilder {
     return _tx!.addBaseOutputAt(DefiTransactionHelper.createAddPoolLiquidity(tokenA, fromA, fromAmountA, tokenB, fromB, fromAmountB, shareAddress, network), 0);
   }
 
+  int addRemoveLiquidityOutput(int token, int amount, String shareAddress) {
+    return _tx!.addBaseOutputAt(DefiTransactionHelper.createRemovePoolLiquidity(shareAddress, token, amount, network), 0);
+  }
+
   int addAccountToAccountOutput(dynamic token, dynamic from, dynamic to, int toValue) {
     return _tx!.addBaseOutput(DefiTransactionHelper.createAccountToAccountOuput(token, from, to, toValue, network));
   }

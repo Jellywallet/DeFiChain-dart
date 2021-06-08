@@ -1,3 +1,6 @@
+## 3.0.1
+- Fix to add "RemoveLiqiudity" inside tx builder
+
 ## 3.0.0+2
 - Downgrade meta to 1.3.0
 
