@@ -9,14 +9,11 @@ import 'package:defichaindart/src/payments/index.dart' show PaymentData;
 void main() {
   group('bitcoinjs-lib (transactions)', () {
     test('can create a 1-to-1 Transaction', () {
-      final alice = ECPair.fromWIF(
-          'L1uyy5qTuGrVXrmrsvHWHgVzW9kKdrp27wBC7Vs6nZDTF2BRUVwy');
+      final alice = ECPair.fromWIF('L1uyy5qTuGrVXrmrsvHWHgVzW9kKdrp27wBC7Vs6nZDTF2BRUVwy');
       final txb = TransactionBuilder();
 
       txb.setVersion(1);
-      txb.addInput(
-          '61d520ccb74288c96bc1a2b20ea1c0d5a704776dd0164a396efec3ea7040349d',
-          0); // Alice's previous transaction output, has 15000 satoshis
+      txb.addInput('61d520ccb74288c96bc1a2b20ea1c0d5a704776dd0164a396efec3ea7040349d', 0); // Alice's previous transaction output, has 15000 satoshis
       txb.addOutput('1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP', 12000);
       // (in)15000 - (out)12000 = (fee)3000, this is the miner fee
 
@@ -28,31 +25,19 @@ void main() {
     });
 
     test('can create a 2-to-2 Transaction', () {
-      final alice = ECPair.fromWIF(
-          'L1Knwj9W3qK3qMKdTvmg3VfzUs3ij2LETTFhxza9LfD5dngnoLG1');
-      final bob = ECPair.fromWIF(
-          'KwcN2pT3wnRAurhy7qMczzbkpY5nXMW2ubh696UBc1bcwctTx26z');
+      final alice = ECPair.fromWIF('L1Knwj9W3qK3qMKdTvmg3VfzUs3ij2LETTFhxza9LfD5dngnoLG1');
+      final bob = ECPair.fromWIF('KwcN2pT3wnRAurhy7qMczzbkpY5nXMW2ubh696UBc1bcwctTx26z');
 
       final txb = TransactionBuilder();
       txb.setVersion(1);
-      txb.addInput(
-          'b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c',
-          6); // Alice's previous transaction output, has 200000 satoshis
-      txb.addInput(
-          '7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730',
-          0); // Bob's previous transaction output, has 300000 satoshis
+      txb.addInput('b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c', 6); // Alice's previous transaction output, has 200000 satoshis
+      txb.addInput('7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730', 0); // Bob's previous transaction output, has 300000 satoshis
       txb.addOutput('1CUNEBjYrCn2y1SdiUMohaKUi4wpP326Lb', 180000);
       txb.addOutput('1JtK9CQw1syfWj1WtFMWomrYdV3W2tWBF9', 170000);
       // (in)(200000 + 300000) - (out)(180000 + 170000) = (fee)150000, this is the miner fee
 
-      txb.sign(
-          vin: 1,
-          keyPair:
-              bob); // Bob signs his input, which was the second input (1th)
-      txb.sign(
-          vin: 0,
-          keyPair:
-              alice); // Alice signs her input, which was the first input (0th)
+      txb.sign(vin: 1, keyPair: bob); // Bob signs his input, which was the second input (1th)
+      txb.sign(vin: 0, keyPair: alice); // Alice signs her input, which was the first input (0th)
 
       // prepare for broadcast to the Bitcoin network, see 'can broadcast a Transaction' below
       expect(txb.build().toHex(),
@@ -60,44 +45,27 @@ void main() {
     });
 
     test('can create a Transaction, w/ a P2SH(P2WPKH) input', () {
-      final alice = ECPair.fromWIF(
-          'L2FroWqrUgsPpTMhpXcAFnVDLPTToDbveh3bhDaU4jhe7Cw6YujN');
+      final alice = ECPair.fromWIF('L2FroWqrUgsPpTMhpXcAFnVDLPTToDbveh3bhDaU4jhe7Cw6YujN');
       final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data!;
       final redeemScript = p2wpkh.output;
 
       final txb = TransactionBuilder();
       txb.setVersion(1);
-      txb.addInput(
-          'ce5986f6d73d7855351fea94c7cf9eb1a4513bf5e004178835d8e2adb9a0f95d',
-          0);
+      txb.addInput('ce5986f6d73d7855351fea94c7cf9eb1a4513bf5e004178835d8e2adb9a0f95d', 0);
       txb.addOutput('1D8nG3VetkT4CfyXGKm7EdLU1YbMD3Amuj', 60000);
 
-      txb.sign(
-          vin: 0,
-          keyPair: alice,
-          redeemScript: redeemScript,
-          witnessValue: 80000);
+      txb.sign(vin: 0, keyPair: alice, redeemScript: redeemScript, witnessValue: 80000);
       // prepare for broadcast to the Bitcoin network, see 'can broadcast a Transaction' below
       expect(txb.build().toHex(),
           '010000000001015df9a0b9ade2d835881704e0f53b51a4b19ecfc794ea1f3555783dd7f68659ce0000000017160014851a33a5ef0d4279bd5854949174e2c65b1d4500ffffffff0160ea0000000000001976a914851a33a5ef0d4279bd5854949174e2c65b1d450088ac02483045022100cb3929c128fec5108071b662e5af58e39ac8708882753a421455ca80462956f6022030c0f4738dd1a13fc7a34393002d25c6e8a6399f29c7db4b98f53a9475d94ca20121038de63cf582d058a399a176825c045672d5ff8ea25b64d28d4375dcdb14c02b2b00000000');
     });
 
     test('can create a Transaction, w/ a P2WPKH input', () {
-      final alice = ECPair.fromWIF(
-          'cUNfunNKXNNJDvUvsjxz5tznMR6ob1g5K6oa4WGbegoQD3eqf4am',
-          network: networks.testnet);
-      final p2wpkh = P2WPKH(
-              data: PaymentData(pubkey: alice.publicKey),
-              network: networks.testnet)
-          .data!;
+      final alice = ECPair.fromWIF('cUNfunNKXNNJDvUvsjxz5tznMR6ob1g5K6oa4WGbegoQD3eqf4am', network: networks.testnet);
+      final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey), network: networks.testnet).data!;
       final txb = TransactionBuilder(network: networks.testnet);
       txb.setVersion(1);
-      txb.addInput(
-          '53676626f5042d42e15313492ab7e708b87559dc0a8c74b7140057af51a2ed5b',
-          0,
-          null,
-          p2wpkh
-              .output); // Alice's previous transaction output, has 200000 satoshis
+      txb.addInput('53676626f5042d42e15313492ab7e708b87559dc0a8c74b7140057af51a2ed5b', 0, null, p2wpkh.output); // Alice's previous transaction output, has 200000 satoshis
       txb.addOutput('tb1qchsmnkk5c8wsjg8vxecmsntynpmkxme0yvh2yt', 1000000);
       txb.addOutput('tb1qn40fftdp6z2lvzmsz4s0gyks3gq86y2e8svgap', 8995000);
 

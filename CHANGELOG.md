@@ -1,3 +1,7 @@
+## 3.1.0
+- Fix all unit tests
+- Fix mix of segwit and non-segwit outputs
+
 ## 3.0.1
 - Fix to add "RemoveLiqiudity" inside tx builder
 
