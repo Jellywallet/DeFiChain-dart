@@ -1,3 +1,6 @@
+## 3.1.1
+- Update dependencies
+
 ## 3.1.0+1
 - Fix
 
