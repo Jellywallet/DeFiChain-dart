@@ -254,7 +254,7 @@ class Transaction {
         varuint.encodingLength(outs.length) +
         ins.fold(0, (sum, input) => sum + 40 + varSliceSize(input.script!)) +
         outs.fold(0, (sum, output) => sum + 8 + varSliceSize(output.script!)) +
-        (hasWitness ? ins.fold(0, (sum, input) => sum + (input.witness != null ? vectorSize(input.witness!) : 0)) : 0);
+        (hasWitness ? ins.fold(0, (sum, input) => sum + vectorSize(input.witness!)) : 0);
   }
 
   int vectorSize(List<Uint8List?> someVector) {
@@ -386,9 +386,7 @@ class Transaction {
 
     if (_ALLOW_WITNESS && hasWitnesses()) {
       ins.forEach((txInt) {
-        if (txInt.witness != null) {
-          writeVector(txInt.witness);
-        }
+        writeVector(txInt.witness);
       });
     }
 
