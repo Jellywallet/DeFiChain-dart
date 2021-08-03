@@ -1,7 +1,6 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:defichaindart/src/defi.dart';
+import 'package:defichaindart/src/utils/bytedata_unit64_js.dart';
 import 'package:hex/hex.dart';
 import 'payments/index.dart' show PaymentData;
 import 'payments/p2pkh.dart' show P2PKH;
@@ -107,7 +106,7 @@ class Transaction {
     }
 
     void writeUInt64(i) {
-      bytes.setUint64(toffset, i, Endian.little);
+      bytes.setUint64Js(toffset, i, Endian.little);
       toffset += 8;
     }
 
@@ -335,7 +334,7 @@ class Transaction {
     }
 
     void writeUInt64(i) {
-      bytes.setUint64(offset, i, Endian.little);
+      bytes.setUint64Js(offset, i, Endian.little);
       offset += 8;
     }
 

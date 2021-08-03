@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:defichaindart/src/utils/constants/op.dart';
+import 'package:defichaindart/src/utils/bytedata_unit64_js.dart';
 import 'package:defichaindart/src/utils/varuint.dart';
 
 import '../defichaindart.dart';
@@ -228,7 +229,7 @@ class DefiTransactionHelper {
   static Uint8List _convertInt64(int value) {
     var buffer = Uint8List(8);
     var byteData = buffer.buffer.asByteData();
-    byteData.setUint64(0, value, Endian.little);
+    byteData.setUint64Js(0, value, Endian.little);
     return buffer;
   }
 }
