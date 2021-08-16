@@ -8,7 +8,7 @@ extension Uint64Js on ByteData {
       b[i] = (tmp >> (i * 8)).toUnsigned(8).toInt();
     }
 
-    if (endian == Endian.big) {
+    if (endian == Endian.little) {
       for (var i = 0; i < b.length; i++) {
         setInt8(byteOffset, b[i]);
         byteOffset++;
