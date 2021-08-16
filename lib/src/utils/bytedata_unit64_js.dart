@@ -1,17 +1,21 @@
-import 'dart:typed_data';
-
-// Le costille for dart2js
 extension Uint64Js on ByteData {
   void setUint64Js(int byteOffset, int value, [Endian endian = Endian.big]) {
-    var highBits = value >> 32;
-    var lowBits = value & 0xFFFFFFFF;
+    final tmp = BigInt.from(value);
+    final b = Uint8List(8);
+    for (var i = 0; i < b.length; i++) {
+      b[i] = (tmp >> (i * 8)).toUnsigned(8).toInt();
+    }
 
     if (endian == Endian.big) {
-      setUint32(byteOffset, highBits, endian);
-      setUint32(byteOffset + 4, lowBits, endian);
+      for (var i = 0; i < b.length; i++) {
+        setInt8(byteOffset, b[i]);
+        byteOffset++;
+      }
     } else {
-      setUint32(byteOffset, lowBits, endian);
-      setUint32(byteOffset + 4, highBits, endian);
+      for (var i = b.length - 1; i >= 0; i--) {
+        setInt8(byteOffset, b[i]);
+        byteOffset++;
+      }
     }
   }
 }
