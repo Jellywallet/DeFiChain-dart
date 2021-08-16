@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 extension Uint64Js on ByteData {
   void setUint64Js(int byteOffset, int value, [Endian endian = Endian.big]) {
     final tmp = BigInt.from(value);
