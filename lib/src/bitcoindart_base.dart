@@ -6,7 +6,6 @@ import 'models/networks.dart';
 import 'payments/index.dart' show PaymentData;
 import 'payments/p2pkh.dart';
 import 'ecpair.dart';
-import 'package:meta/meta.dart';
 
 /// Checks if you are awesome. Spoiler: you are.
 class HDWallet {
@@ -95,13 +94,13 @@ class Wallet {
   ECPair _keyPair;
   P2PKH _p2pkh;
 
-  String? get privKey => _keyPair != null ? HEX.encode(_keyPair.privateKey!) : null;
+  String? get privKey => HEX.encode(_keyPair.privateKey!);
 
-  String? get pubKey => _keyPair != null ? HEX.encode(_keyPair.publicKey!) : null;
+  String? get pubKey => HEX.encode(_keyPair.publicKey!);
 
-  String? get wif => _keyPair != null ? _keyPair.toWIF() : null;
+  String? get wif => _keyPair.toWIF();
 
-  String? get address => _p2pkh != null ? _p2pkh.data!.address : null;
+  String? get address => _p2pkh.data!.address;
 
   NetworkType? network;
 

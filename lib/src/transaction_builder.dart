@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:defichaindart/src/defi.dart';
+import 'package:defichaindart/src/saiive.dart';
 import 'package:meta/meta.dart';
 import 'package:hex/hex.dart';
 import 'utils/script.dart' as bscript;
@@ -123,6 +124,10 @@ class TransactionBuilder {
     return _tx!.addBaseOutputAt(DefiTransactionHelper.createAddPoolLiquidity(tokenA, fromA, fromAmountA, tokenB, fromB, fromAmountB, shareAddress, network), 0);
   }
 
+  int addAddLiquidityOutputSingleAddress(String from, int tokenA, int fromAmountA, int tokenB, int fromAmountB, String shareAddress) {
+    return _tx!.addBaseOutputAt(DefiTransactionHelper.createAddPoolLiquiditySingleAddress(from, tokenA, fromAmountA, tokenB, fromAmountB, shareAddress, network), 0);
+  }
+
   int addRemoveLiquidityOutput(int token, int amount, String shareAddress) {
     return _tx!.addBaseOutputAt(DefiTransactionHelper.createRemovePoolLiquidity(shareAddress, token, amount, network), 0);
   }
@@ -147,6 +152,56 @@ class TransactionBuilder {
 
   int addSwapOutput(dynamic fromToken, dynamic from, int fromAmount, dynamic toToken, dynamic to, int maxPrice, int maxPricefraction) {
     _tx!.addBaseOutputAt(DefiTransactionHelper.createPoolSwapOutput(fromToken, from, fromAmount, toToken, to, maxPrice, maxPricefraction, network), 0);
+    return 0;
+  }
+
+  int addSwapV2Output(dynamic fromToken, dynamic from, int fromAmount, dynamic toToken, dynamic to, int maxPrice, int maxPricefraction, List<int> poolIds) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.createPoolSwapV2Output(fromToken, from, fromAmount, toToken, to, maxPrice, maxPricefraction, poolIds, network), 0);
+    return 0;
+  }
+
+  int addCloseVault(dynamic vaultId, dynamic to) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.closeVaultOutput(vaultId, to, network), 0);
+    return 0;
+  }
+
+  int addCreateVault(dynamic ownerAddress, dynamic schemeId, int vaultFees) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.createVaultOutput(ownerAddress, schemeId, vaultFees, network), 0);
+    return 0;
+  }
+
+  int addUpdateVault(dynamic vaultId, dynamic ownerAddress, dynamic schemeId) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.updateVaultOutput(vaultId, ownerAddress, schemeId, network), 0);
+    return 0;
+  }
+
+  int addDepositToVault(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.depositToVaultOutput(vaultId, from, tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addWithdrawToVault(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.withdrawFromVaultOutput(vaultId, to, tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addTakeLoan(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.takeLoanVaultOutput(vaultId, to, tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addPaybackLoan(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.paybackLoanVaultOutput(vaultId, from, tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addPlaceAuctionBid(String vaultId, int index, String from, int tokenId, int tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.placeAuctionBidOutput(vaultId, index, from, tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addSaiiveExportOutput() {
+    _tx!.addBaseOutputAt(SaiiveTransactionHelper.createExportOutput(), 0);
     return 0;
   }
 

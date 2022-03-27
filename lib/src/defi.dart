@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:defichaindart/src/utils/constants/op.dart';
 import 'package:defichaindart/src/utils/bytedata_unit64_js.dart';
 import 'package:defichaindart/src/utils/varuint.dart';
+import 'package:hex/hex.dart';
+import 'package:convert/convert.dart';
+import 'utils/varuint.dart' as varuint;
 
 import '../defichaindart.dart';
 
@@ -24,6 +28,7 @@ class DefiTxTypes {
   static var CreatePoolPair = 'p';
   static var UpdatePoolPair = 'u';
   static var PoolSwap = 's';
+  static var PoolSwapV2 = 'i';
   static var AddPoolLiquidity = 'l';
   static var RemovePoolLiquidity = 'r';
 
@@ -38,6 +43,30 @@ class DefiTxTypes {
 
   // Auto auth TX
   static var AutoAuthPrep = 'A';
+
+  static var ICX_CreateOrder = '1';
+  static var ICX_MakeOffer = '2';
+  static var ICX_Submit_DFC_HTLC = '3';
+  static var ICX_Submit_EXT_HTLC = '4';
+  static var ICX_Claim_DFC_HTLC = '5';
+  static var ICX_CloseOrder = '6';
+  static var ICX_CloseOffer = '7';
+
+// Loans
+  static var SetLoanCollateralToken = 'c';
+  static var SetLoanToken = 'g';
+  static var UpdateLoanToken = 'x';
+  static var LoanScheme = 'L';
+  static var DefaultLoanScheme = 'd';
+  static var DestroyLoanScheme = 'D';
+  static var Vault = 'V';
+  static var CloseVault = 'e';
+  static var UpdateVault = 'v';
+  static var DepositToVault = 'S';
+  static var WithdrawFromVault = 'J';
+  static var TakeLoan = 'X';
+  static var PaybackLoan = 'H';
+  static var AuctionBid = 'I';
 }
 
 class DefiOutput extends OutputBase {
@@ -53,30 +82,146 @@ class DefiTransactionHelper {
     script.addAll(DefiTxHeader);
     if (txType is String) {
       if (txType.length > 1) {
-        throw ArgumentError("txType cannot be longer than 1 char");
+        throw ArgumentError('txType cannot be longer than 1 char');
       }
       script.add(txType[0].codeUnitAt(0));
     } else {
-      throw ArgumentError("txType is invalid!");
+      throw ArgumentError('txType is invalid!');
     }
     return script;
   }
 
   static Uint8List _postpare(Uint8List defiScript) {
-    var cscript = new List<int>.empty(growable: true);
+    var cscript = List<int>.empty(growable: true);
 
-    cscript.add(OPS["OP_RETURN"]!);
+    cscript.add(OPS['OP_RETURN']!);
 
-    if (defiScript.length < OPS["OP_PUSHDATA1"]!) {
+    if (defiScript.length < OPS['OP_PUSHDATA1']!) {
       cscript.add(defiScript.length);
     } else if (defiScript.length <= 0xff) {
-      cscript.add(OPS["OP_PUSHDATA1"]!);
+      cscript.add(OPS['OP_PUSHDATA1']!);
       cscript.add(defiScript.length);
     }
 
     cscript.addAll(defiScript);
 
     return Uint8List.fromList(cscript);
+  }
+
+  static DefiOutput createIcxMakeOffer(String orderTx, dynamic amount, dynamic ownerAddress, dynamic receivePubKey, dynamic expiry) {
+    var script = _prepare(DefiTxTypes.ICX_MakeOffer);
+
+    script.addAll(HEX.decode(orderTx));
+
+    var defiScript = Uint8List.fromList(script);
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createVaultOutput(dynamic ownerAddress, dynamic schemeId, int vaultFees, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.Vault);
+
+    script.addAll(_createScript(ownerAddress, nw));
+
+    var utf8 = _convertUtf8(schemeId);
+    script.add(utf8.length);
+    script.addAll(utf8);
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), vaultFees);
+  }
+
+  static DefiOutput updateVaultOutput(dynamic vaultId, dynamic ownerAddress, dynamic schemeId, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.UpdateVault);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(ownerAddress, nw));
+    var utf8 = _convertUtf8(schemeId);
+    script.add(utf8.length);
+    script.addAll(utf8);
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput depositToVaultOutput(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.DepositToVault);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(from, nw));
+    script.addAll(_createTokenBalance(tokenId, tokenAmount, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput withdrawFromVaultOutput(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.WithdrawFromVault);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(to, nw));
+    script.addAll(_createTokenBalance(tokenId, tokenAmount, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput takeLoanVaultOutput(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.TakeLoan);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(to, nw));
+    script.addAll(_createBalance([tokenId], [tokenAmount]));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput paybackLoanVaultOutput(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.PaybackLoan);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(from, nw));
+    script.addAll(_createBalance([tokenId], [tokenAmount]));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput closeVaultOutput(dynamic vaultId, dynamic to, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.CloseVault);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_createScript(to, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput placeAuctionBidOutput(String vaultId, int index, String from, int tokenId, int tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.AuctionBid);
+
+    var hexDe = hex.decode(vaultId).reversed;
+    script.addAll(hexDe);
+    script.addAll(_convertInt32(index));
+    script.addAll(_createScript(from, nw));
+    script.addAll(_createTokenBalance(tokenId, tokenAmount, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
   }
 
   static DefiOutput createAccountToAccountOuput(dynamic token, dynamic from, dynamic to, int toValue, [NetworkType? nw]) {
@@ -122,6 +267,30 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
+  static DefiOutput createPoolSwapV2Output(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, List<int> poolIds,
+      [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.PoolSwapV2);
+
+    script.addAll(_createScript(from, nw));
+    script.addAll(_convertUint(fromToken));
+    script.addAll(_convertInt64(fromAmount));
+
+    script.addAll(_createScript(to, nw));
+    script.addAll(_convertUint(toToken));
+
+    script.addAll(_convertUint(maxPrice));
+    script.addAll(_convertUint(maxPricefraction));
+
+    script.add(poolIds.length);
+    for (var pool in poolIds) {
+      script.addAll(_convertUint(pool));
+    }
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
   static DefiOutput createAuthOutput() {
     var script = _prepare(DefiTxTypes.AutoAuthPrep);
     var defiScript = Uint8List.fromList(script);
@@ -135,6 +304,20 @@ class DefiTransactionHelper {
     script.add(2);
     script.addAll(_addAccount(tokenA, fromA, fromAmountA, nw));
     script.addAll(_addAccount(tokenB, fromB, fromAmountB, nw));
+
+    script.addAll(_createScript(shareAddress, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createAddPoolLiquiditySingleAddress(String from, int tokenA, int fromAmountA, int tokenB, int fromAmountB, String shareAddress, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.AddPoolLiquidity);
+
+    script.add(1);
+    script.addAll(_createScript(from, nw));
+    script.addAll(_createBalance([tokenA, tokenB], [fromAmountA, fromAmountB]));
 
     script.addAll(_createScript(shareAddress, nw));
 
@@ -188,6 +371,14 @@ class DefiTransactionHelper {
     return Uint8List.fromList(script);
   }
 
+  static Uint8List _createTokenBalance(int token, int amount, NetworkType? nw) {
+    var script = List<int>.empty(growable: true);
+    script.addAll(_convertVarInt(token));
+    script.addAll(_convertInt64(amount));
+
+    return Uint8List.fromList(script);
+  }
+
   static Uint8List _addAccount(dynamic token, dynamic address, int value, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
 
@@ -201,11 +392,11 @@ class DefiTransactionHelper {
     var script = List<int>.empty(growable: true);
 
     if (token.length != value.length) {
-      throw ArgumentError("token and value list must have equal length");
+      throw ArgumentError('token and value list must have equal length');
     }
 
     script.add(token.length);
-    for (int i = 0; i < token.length; i++) {
+    for (var i = 0; i < token.length; i++) {
       // add token type
       script.addAll(_convertInt32(token[i]));
       // add token amount
@@ -220,6 +411,17 @@ class DefiTransactionHelper {
     var byteData = buffer.buffer.asByteData();
     byteData.setUint32(0, value, Endian.little);
     return buffer;
+  }
+
+  static Uint8List _convertVarInt(int value) {
+    var buffer = Uint8List(varuint.encodingLength(value));
+    varuint.encode(value, buffer, 0);
+    return buffer;
+  }
+
+  static Uint8List _convertUtf8(String value) {
+    var utf = utf8.encode(value);
+    return Uint8List.fromList(utf);
   }
 
   static Uint8List _convertUint(int value) {

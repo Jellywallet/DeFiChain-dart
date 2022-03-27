@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
+import 'package:bip32_defichain/bip32.dart' as seg;
 import 'package:bip32_defichain/src/utils/ecurve.dart' as ecc;
 import 'package:bip32_defichain/src/utils/wif.dart' as wif;
+import 'package:defichaindart/defichaindart.dart';
+import 'package:hex/hex.dart';
+import 'package:pointycastle/ecc/api.dart';
 import 'models/networks.dart';
 
 class ECPair {
@@ -30,6 +35,12 @@ class ECPair {
 
   Uint8List sign(Uint8List hash) {
     return ecc.sign(hash, privateKey!);
+  }
+
+  String signMessage(String message, [NetworkType? network, seg.SegwitType segwitType = seg.SegwitType.None, bool compressed = true]) {
+    var hash = magicHash(message, network);
+
+    return base64Encode(ecc.signMessage(hash, privateKey!, compressed, segwitType));
   }
 
   bool verify(Uint8List hash, Uint8List signature) {

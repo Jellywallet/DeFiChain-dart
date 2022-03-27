@@ -28,6 +28,10 @@ final ONE = HEX.decode('00000000000000000000000000000000000000000000000000000000
 final VALUE_UINT64_MAX = HEX.decode('ffffffffffffffff');
 final BLANK_OUTPUT = Output(script: EMPTY_SCRIPT, valueBuffer: Uint8List.fromList(VALUE_UINT64_MAX));
 
+const int SERIALIZE_TRANSACTION_NO_WITNESS = 0x40000000;
+const int SERIALIZE_TRANSACTION_NO_TOKENS = 0x20000000;
+const MIN_VERSION_NO_TOKENS = 3;
+
 class Transaction {
   int? version = 1;
   int? locktime = 0;
@@ -151,23 +155,29 @@ class Transaction {
     }
 
     if ((hashType & 0x1f) != SIGHASH_SINGLE && (hashType & 0x1f) != SIGHASH_NONE) {
-      var txOutsSize = outs.fold(0, (dynamic sum, output) => sum + 8 + varSliceSize(output.script!));
+      var txOutsSize = outs.fold(0, (dynamic sum, output) => sum + (this.version! > MIN_VERSION_NO_TOKENS ? 1 : 0) + 8 + varSliceSize(output.script!));
       tbuffer = Uint8List(txOutsSize);
       bytes = tbuffer.buffer.asByteData();
       toffset = 0;
       outs.forEach((txOut) {
         writeUInt64(txOut.value);
         writeVarSlice(txOut.script);
+        if (version! > MIN_VERSION_NO_TOKENS) {
+          writeVarInt(txOut.tokenId);
+        }
       });
       hashOutputs = bcrypto.hash256(tbuffer);
     } else if ((hashType & 0x1f) == SIGHASH_SINGLE && inIndex < outs.length) {
       // SIGHASH_SINGLE only hash that according output
       var output = outs[inIndex];
-      tbuffer = Uint8List(8 + varSliceSize(output.script!));
+      tbuffer = Uint8List(8 + (this.version! > MIN_VERSION_NO_TOKENS ? 1 : 0) + varSliceSize(output.script!));
       bytes = tbuffer.buffer.asByteData();
       toffset = 0;
       writeUInt64(output.value);
       writeVarSlice(output.script);
+      if (version! > MIN_VERSION_NO_TOKENS) {
+        writeVarInt(output.tokenId);
+      }
       hashOutputs = bcrypto.hash256(tbuffer);
     }
 
@@ -252,8 +262,16 @@ class Transaction {
         varuint.encodingLength(ins.length) +
         varuint.encodingLength(outs.length) +
         ins.fold(0, (sum, input) => sum + 40 + varSliceSize(input.script!)) +
-        outs.fold(0, (sum, output) => sum + 8 + varSliceSize(output.script!)) +
-        (hasWitness ? ins.fold(0, (sum, input) => sum + vectorSize(input.witness!)) : 0);
+        outs.fold(0, (sum, output) => sum + (this.version! > MIN_VERSION_NO_TOKENS ? 1 : 0) + 8 + varSliceSize(output.script!)) +
+        (hasWitness ? ins.fold(0, (sum, input) => sum + vectorSizeNew(input)) : 0);
+  }
+
+  int vectorSizeNew(Input input) {
+    if (input.witness != null && input.witness!.isNotEmpty) {
+      return vectorSize(input.witness!);
+    }
+
+    return varuint.encodingLength(0);
   }
 
   int vectorSize(List<Uint8List?> someVector) {
@@ -381,11 +399,18 @@ class Transaction {
         writeSlice(txOut.valueBuffer);
       }
       writeVarSlice(txOut.script);
+      if (this.version! > MIN_VERSION_NO_TOKENS) {
+        writeVarInt(txOut.tokenId);
+      }
     });
 
     if (_ALLOW_WITNESS && hasWitnesses()) {
       ins.forEach((txInt) {
-        writeVector(txInt.witness);
+        if (txInt.witness == null) {
+          writeVarInt(0);
+        } else {
+          writeVector(txInt.witness);
+        }
       });
     }
 
@@ -686,7 +711,9 @@ class OutputBase {
   List<Uint8List?>? signatures;
   int? maxSignatures;
 
-  OutputBase({this.type, this.script, this.value, this.pubkeys, this.signatures, this.valueBuffer, this.maxSignatures}) {}
+  final int tokenId;
+
+  OutputBase({this.type, this.script, this.value, this.pubkeys, this.signatures, this.valueBuffer, this.maxSignatures, this.tokenId = 0}) {}
 
   factory OutputBase.expandOutput(Uint8List? script, [Uint8List? ourPubKey]) {
     if (ourPubKey == null) return OutputBase();

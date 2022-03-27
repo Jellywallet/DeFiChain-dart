@@ -1,7 +1,6 @@
 import 'dart:typed_data';
-import 'package:meta/meta.dart';
 import 'package:bip32_defichain/src/utils/ecurve.dart' show isPoint;
-import 'package:bech32/bech32.dart';
+import 'package:defichain_bech32/defichain_bech32.dart';
 
 import '../crypto.dart';
 import '../models/networks.dart';
@@ -72,13 +71,13 @@ class P2WPKH {
   }
 
   void _getDataFromHash() {
-    data!.address ??= segwit.encode(Segwit(network.bech32!, 0, data!.hash!));
+    data!.address ??= segwit.encode(Segwit(network.bech32!, 0, data!.hash!)).address;
     data!.output ??= bscript.compile([OPS['OP_0'], data!.hash]);
   }
 
   void _getDataFromAddress(String address) {
     try {
-      var _address = segwit.decode(address);
+      var _address = segwit.decode(SegwitInput(network.bech32!, address));
       if (network.bech32 != _address.hrp) {
         throw ArgumentError('Invalid prefix or Network mismatch');
       }
