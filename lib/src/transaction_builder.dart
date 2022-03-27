@@ -200,6 +200,15 @@ class TransactionBuilder {
     return 0;
   }
 
+  int addMintToken(dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(DefiTransactionHelper.mintTokenOutput(tokenId, tokenAmount, network), 0);
+    return 0;
+  }
+
+  int addSmartContractOutput(int token, dynamic from, int value) {
+    return _tx!.addBaseOutputAt(DefiTransactionHelper.smartContractOutput(token, from, value, network), 0);
+  }
+
   int addSaiiveExportOutput() {
     _tx!.addBaseOutputAt(SaiiveTransactionHelper.createExportOutput(), 0);
     return 0;

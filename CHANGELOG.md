@@ -1,4 +1,55 @@
-## 3.1.1
+## 3.8.1
+- Update max price encoding
+
+## 3.8.0-prerelease
+- Impl Vault tx
+
+## 3.7.0+1
+- Update export script type
+
+## 3.7.0
+- Add saiive custom outputs
+
+## 3.6.0+1
+- Update refs
+
+## 3.6.0
+- Add signMessage ECPair call
+
+## 3.5.1+1
+- Export magicHash function
+
+## 3.5.1
+- Fix signing prefix
+
+## 3.5.0
+- Fix for segwit and non-segwit inputs
+
+## 3.4.0+1
+- add custom bech32 lib to check hrp ourself
+
+## 3.4.0
+- Add another addPool tx possibility
+
+## 3.3.0
+- Update bip32 lib
+
+## 3.2.1+3
+- Add token id to sig-hashing - fix buffer overflow
+
+## 3.2.1+2
+- Add token id to sig-hashing
+
+## 3.2.1+1
+- Fix tx hashing
+
+## 3.2.1
+- Fix buffer length for tokenId if version > 3
+
+## 3.2.0
+- Add tokenId to txb
+
+### 3.1.1
 - Update dependencies
 
 ## 3.1.0+1

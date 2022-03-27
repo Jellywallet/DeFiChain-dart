@@ -37,6 +37,7 @@ class DefiTxTypes {
   static var AccountToUtxos = 'b';
   static var AccountToAccount = 'B';
   static var AnyAccountsToAccounts = 'a';
+  static var SmartContract = 'K';
 
   //set governance variable
   static var SetGovVariable = 'G';
@@ -106,6 +107,29 @@ class DefiTransactionHelper {
     cscript.addAll(defiScript);
 
     return Uint8List.fromList(cscript);
+  }
+
+  static DefiOutput smartContractOutput(dynamic token, dynamic from, int value, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.SmartContract);
+
+    script.addAll([0x08, 0x44, 0x46, 0x49, 0x50, 0x32, 0x32, 0x30, 0x31]);
+
+    script.add(1); // add 1 account
+    script.addAll(_addAccount(token, from, value, nw));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput mintTokenOutput(dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+    var script = _prepare(DefiTxTypes.MintToken);
+
+    script.addAll(_createBalance([tokenId], [tokenAmount]));
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
   }
 
   static DefiOutput createIcxMakeOffer(String orderTx, dynamic amount, dynamic ownerAddress, dynamic receivePubKey, dynamic expiry) {
@@ -278,8 +302,8 @@ class DefiTransactionHelper {
     script.addAll(_createScript(to, nw));
     script.addAll(_convertUint(toToken));
 
-    script.addAll(_convertUint(maxPrice));
-    script.addAll(_convertUint(maxPricefraction));
+    script.addAll(_convertUint64(maxPrice));
+    script.addAll(_convertUint64(maxPricefraction));
 
     script.add(poolIds.length);
     for (var pool in poolIds) {
@@ -383,8 +407,8 @@ class DefiTransactionHelper {
     var script = List<int>.empty(growable: true);
 
     script.addAll(_createScript(address, nw));
-    script.addAll(_createBalance([token], [value]));
 
+    script.addAll(_createBalance([token], [value]));
     return Uint8List.fromList(script);
   }
 
@@ -404,6 +428,19 @@ class DefiTransactionHelper {
     }
 
     return Uint8List.fromList(script);
+  }
+
+  static Uint8List _convertUint64(dynamic value) {
+    // var second = value % 0x100000000;
+    // var first = ((value - second) / 0x100000000).round();
+    var buffer = Uint8List(8);
+
+    var byteData = buffer.buffer.asByteData();
+    // byteData.setUint32(0, second, Endian.little);
+    // byteData.setUint32(4, first, Endian.little);
+
+    writeUInt64LE(byteData, 0, value);
+    return buffer;
   }
 
   static Uint8List _convertInt32(int value) {
