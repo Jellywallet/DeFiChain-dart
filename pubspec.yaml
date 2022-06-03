@@ -10,7 +10,7 @@ dependencies:
   defichain_bech32: ^0.1.0
   bip32_defichain:
     git:
-      url: https://github.com/IhorSavva/bip32-dart
+      url: https://github.com/Jellywallet/bip32-dart
       ref: b1b48f6b165a44d3336aa7a8ef5888007a8e600e
   pointycastle: ^3.3.4
   hex: ^0.2.0
