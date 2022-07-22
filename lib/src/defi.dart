@@ -336,6 +336,14 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
+  static DefiOutput createMessageOutput(String message, [NetworkType? nw]) {
+    var script = utf8.encode(message);
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
   static DefiOutput createAddPoolLiquiditySingleAddress(String from, int tokenA, int fromAmountA, int tokenB, int fromAmountB, String shareAddress, [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AddPoolLiquidity);
 

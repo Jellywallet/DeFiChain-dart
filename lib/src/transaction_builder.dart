@@ -3,6 +3,7 @@ import 'package:defichaindart/src/defi.dart';
 import 'package:defichaindart/src/saiive.dart';
 import 'package:meta/meta.dart';
 import 'package:hex/hex.dart';
+import 'defi.dart';
 import 'utils/script.dart' as bscript;
 import 'ecpair.dart';
 import 'models/networks.dart';
@@ -212,6 +213,10 @@ class TransactionBuilder {
   int addSaiiveExportOutput() {
     _tx!.addBaseOutputAt(SaiiveTransactionHelper.createExportOutput(), 0);
     return 0;
+  }
+
+  int addMessageOutput(String message) {
+    return _tx!.addBaseOutput(DefiTransactionHelper.createMessageOutput(message));
   }
 
   int addInput(dynamic txHash, int? vout, [int? sequence, Uint8List? prevOutScript]) {
