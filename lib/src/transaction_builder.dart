@@ -346,6 +346,25 @@ class TransactionBuilder {
     if (!signed) throw ArgumentError('Key pair cannot sign for this input');
   }
 
+  dynamic setSignature({required int vin, required Uint8List signature, required Uint8List pubKey, int? hashType}) {
+    var signed = false;
+
+    final input = _inputs![vin];
+    hashType = hashType ?? SIGHASH_ALL;
+
+    for (var i = 0; i < input.pubkeys!.length; i++) {
+      if (HEX.encode(pubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+        continue;
+      }
+      if (input.signatures![i] != null) {
+        throw ArgumentError('Signature already exists');
+      }
+      input.signatures![i] = bscript.encodeSignature(signature, hashType);
+      signed = true;
+    }
+    if (!signed) throw ArgumentError('Key pair cannot sign for this input');
+  }
+
   Transaction _build(bool allowIncomplete) {
     if (!allowIncomplete) {
       if (_tx!.ins.isEmpty) throw ArgumentError('Transaction has no inputs');
