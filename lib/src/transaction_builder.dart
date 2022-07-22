@@ -248,6 +248,41 @@ class TransactionBuilder {
     final input = _inputs![vin];
     final ourPubKey = keyPair.publicKey;
 
+    var signatureHash = prepareSign(
+        pubKey: ourPubKey!,
+        vin: vin,
+        hashType: hashType,
+        prevOutScriptType: prevOutScriptType,
+        redeemScript: redeemScript,
+        witnessScript: witnessScript,
+        witnessValue: witnessValue);
+
+    // enforce in order signing of public keys
+    var signed = false;
+    for (var i = 0; i < input.pubkeys!.length; i++) {
+      if (HEX.encode(ourPubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+        continue;
+      }
+      if (input.signatures![i] != null) {
+        throw ArgumentError('Signature already exists');
+      }
+      final signature = keyPair.sign(signatureHash);
+      input.signatures![i] = bscript.encodeSignature(signature, hashType);
+      signed = true;
+    }
+    if (!signed) throw ArgumentError('Key pair cannot sign for this input');
+  }
+
+  Uint8List prepareSign(
+      {required int vin, required Uint8List pubKey, String? prevOutScriptType, Uint8List? redeemScript, int? witnessValue, Uint8List? witnessScript, int? hashType}) {
+    if (vin >= _inputs!.length) throw ArgumentError('No input at index: $vin');
+    hashType = hashType ?? SIGHASH_ALL;
+    if (_needsOutputs(hashType)) {
+      throw ArgumentError('Transaction needs outputs');
+    }
+    final input = _inputs![vin];
+    final ourPubKey = pubKey;
+
     // if redeemScript was previously provided, enforce consistency
     if (input.redeemScript != null && redeemScript != null && input.redeemScript.toString() != redeemScript.toString()) {
       throw ArgumentError('Inconsistent redeemScript');
@@ -329,27 +364,22 @@ class TransactionBuilder {
     } else {
       signatureHash = _tx!.hashForSignature(vin, input.signScript, hashType);
     }
-
-    // enforce in order signing of public keys
-    var signed = false;
-    for (var i = 0; i < input.pubkeys!.length; i++) {
-      if (HEX.encode(ourPubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
-        continue;
-      }
-      if (input.signatures![i] != null) {
-        throw ArgumentError('Signature already exists');
-      }
-      final signature = keyPair.sign(signatureHash);
-      input.signatures![i] = bscript.encodeSignature(signature, hashType);
-      signed = true;
-    }
-    if (!signed) throw ArgumentError('Key pair cannot sign for this input');
+    return signatureHash;
   }
 
-  dynamic setSignature({required int vin, required Uint8List signature, required Uint8List pubKey, int? hashType}) {
-    var signed = false;
-
+  dynamic setSignature(
+      {required int vin,
+      required Uint8List signature,
+      required Uint8List pubKey,
+      String? prevOutScriptType,
+      Uint8List? redeemScript,
+      int? witnessValue,
+      Uint8List? witnessScript,
+      int? hashType}) {
+    prepareSign(
+        pubKey: pubKey, vin: vin, hashType: hashType, prevOutScriptType: prevOutScriptType, redeemScript: redeemScript, witnessScript: witnessScript, witnessValue: witnessValue);
     final input = _inputs![vin];
+    var signed = false;
     hashType = hashType ?? SIGHASH_ALL;
 
     for (var i = 0; i < input.pubkeys!.length; i++) {
