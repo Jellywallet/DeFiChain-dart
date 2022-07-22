@@ -400,6 +400,34 @@ class TransactionBuilder {
     if (!signed) throw ArgumentError('Key pair cannot sign for this input');
   }
 
+  dynamic setSignatureRaw(
+      {required int vin,
+      required Uint8List signature,
+      required Uint8List pubKey,
+      String? prevOutScriptType,
+      Uint8List? redeemScript,
+      int? witnessValue,
+      Uint8List? witnessScript,
+      int? hashType}) {
+    prepareSign(
+        pubKey: pubKey, vin: vin, hashType: hashType, prevOutScriptType: prevOutScriptType, redeemScript: redeemScript, witnessScript: witnessScript, witnessValue: witnessValue);
+    final input = _inputs![vin];
+    var signed = false;
+    hashType = hashType ?? SIGHASH_ALL;
+
+    for (var i = 0; i < input.pubkeys!.length; i++) {
+      if (HEX.encode(pubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+        continue;
+      }
+      if (input.signatures![i] != null) {
+        throw ArgumentError('Signature already exists');
+      }
+      input.signatures![i] = signature;
+      signed = true;
+    }
+    if (!signed) throw ArgumentError('Key pair cannot sign for this input');
+  }
+
   Transaction _build(bool allowIncomplete) {
     if (!allowIncomplete) {
       if (_tx!.ins.isEmpty) throw ArgumentError('Transaction has no inputs');
