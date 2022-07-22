@@ -322,7 +322,7 @@ class TransactionBuilder {
 
         Uint8List? signScript = redeemScript;
         if (expanded.type == SCRIPT_TYPES['P2WPKH']) {
-          signScript = P2WPKH(data: PaymentData(pubkey: expanded.pubkeys![0]), network: network).data!.output;
+          signScript = P2PKH(data: PaymentData(pubkey: expanded.pubkeys![0]), network: network).data!.output;
         }
         input.redeemScript = redeemScript;
         input.redeemScriptType = expanded.type;
