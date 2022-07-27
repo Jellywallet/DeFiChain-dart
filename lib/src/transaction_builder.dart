@@ -369,6 +369,7 @@ class TransactionBuilder {
     } else {
       signatureHash = _tx!.hashForSignature(vin, input.signScript, hashType);
     }
+    print("signatureHash is " + HEX.encode(signatureHash));
     return signatureHash;
   }
 
