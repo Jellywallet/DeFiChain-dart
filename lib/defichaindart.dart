@@ -15,3 +15,4 @@ export 'src/bip39/bip39_base.dart';
 export 'src/models/networks.dart';
 
 export 'src/utils/magic_hash.dart';
+export 'src/utils/address.dart';
