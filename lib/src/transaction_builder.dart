@@ -273,6 +273,10 @@ class TransactionBuilder {
       }
       final signature = keyPair.sign(signatureHash);
       input.signatures![i] = bscript.encodeSignature(signature, hashType);
+
+      print("signature is " + HEX.encode(signature));
+      print("encodedSignature is" + HEX.encode(input.signatures![i]!));
+
       signed = true;
     }
     if (!signed) throw ArgumentError('Key pair cannot sign for this input');
