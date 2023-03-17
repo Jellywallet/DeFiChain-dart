@@ -7,6 +7,7 @@ import 'package:defichaindart/src/utils/varuint.dart';
 import 'package:hex/hex.dart';
 import 'package:convert/convert.dart';
 import 'utils/varuint.dart' as varuint;
+import 'utils/compactuint.dart' as compactvaruint;
 
 import '../defichaindart.dart';
 
@@ -18,7 +19,8 @@ class DefiTxTypes {
   static var CreateToken = 'T';
   static var MintToken = 'M';
   static var UpdateToken = 'N'; // previous type, only DAT flag triggers
-  static var UpdateTokenAny = 'n'; // new type of token's update with any flags/fields possible
+  static var UpdateTokenAny =
+      'n'; // new type of token's update with any flags/fields possible
 
   // dex orders - just not to overlap in future
 //    CreateOrder         = 'O',
@@ -109,7 +111,8 @@ class DefiTransactionHelper {
     return Uint8List.fromList(cscript);
   }
 
-  static DefiOutput smartContractOutput(dynamic token, dynamic from, int value, [NetworkType? nw]) {
+  static DefiOutput smartContractOutput(dynamic token, dynamic from, int value,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.SmartContract);
 
     script.addAll([0x08, 0x44, 0x46, 0x49, 0x50, 0x32, 0x32, 0x30, 0x31]);
@@ -122,7 +125,8 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput mintTokenOutput(dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+  static DefiOutput mintTokenOutput(dynamic tokenId, dynamic tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.MintToken);
 
     script.addAll(_createBalance([tokenId], [tokenAmount]));
@@ -132,7 +136,8 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createIcxMakeOffer(String orderTx, dynamic amount, dynamic ownerAddress, dynamic receivePubKey, dynamic expiry) {
+  static DefiOutput createIcxMakeOffer(String orderTx, dynamic amount,
+      dynamic ownerAddress, dynamic receivePubKey, dynamic expiry) {
     var script = _prepare(DefiTxTypes.ICX_MakeOffer);
 
     script.addAll(HEX.decode(orderTx));
@@ -141,7 +146,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createVaultOutput(dynamic ownerAddress, dynamic schemeId, int vaultFees, [NetworkType? nw]) {
+  static DefiOutput createVaultOutput(
+      dynamic ownerAddress, dynamic schemeId, int vaultFees,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.Vault);
 
     script.addAll(_createScript(ownerAddress, nw));
@@ -155,7 +162,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), vaultFees);
   }
 
-  static DefiOutput updateVaultOutput(dynamic vaultId, dynamic ownerAddress, dynamic schemeId, [NetworkType? nw]) {
+  static DefiOutput updateVaultOutput(
+      dynamic vaultId, dynamic ownerAddress, dynamic schemeId,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.UpdateVault);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -170,7 +179,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput depositToVaultOutput(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+  static DefiOutput depositToVaultOutput(
+      dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.DepositToVault);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -183,7 +194,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput withdrawFromVaultOutput(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+  static DefiOutput withdrawFromVaultOutput(
+      dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.WithdrawFromVault);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -196,7 +209,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput takeLoanVaultOutput(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+  static DefiOutput takeLoanVaultOutput(
+      dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.TakeLoan);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -209,7 +224,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput paybackLoanVaultOutput(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount, [NetworkType? nw]) {
+  static DefiOutput paybackLoanVaultOutput(
+      dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.PaybackLoan);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -222,7 +239,8 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput closeVaultOutput(dynamic vaultId, dynamic to, [NetworkType? nw]) {
+  static DefiOutput closeVaultOutput(dynamic vaultId, dynamic to,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.CloseVault);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -234,7 +252,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput placeAuctionBidOutput(String vaultId, int index, String from, int tokenId, int tokenAmount, [NetworkType? nw]) {
+  static DefiOutput placeAuctionBidOutput(
+      String vaultId, int index, String from, int tokenId, int tokenAmount,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AuctionBid);
 
     var hexDe = hex.decode(vaultId).reversed;
@@ -248,7 +268,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAccountToAccountOuput(dynamic token, dynamic from, dynamic to, int toValue, [NetworkType? nw]) {
+  static DefiOutput createAccountToAccountOuput(
+      dynamic token, dynamic from, dynamic to, int toValue,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AccountToAccount);
 
     script.addAll(_createScript(from, nw));
@@ -260,7 +282,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAnyAccountToAccountOutput(dynamic token, dynamic from, int fromValue, dynamic to, int toValue, [NetworkType? nw]) {
+  static DefiOutput createAnyAccountToAccountOutput(
+      dynamic token, dynamic from, int fromValue, dynamic to, int toValue,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AnyAccountsToAccounts);
 
     script.add(1); // add 1 from account
@@ -273,15 +297,23 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createPoolSwapOutput(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, [NetworkType? nw]) {
+  static DefiOutput createPoolSwapOutput(
+      int fromToken,
+      String from,
+      int fromAmount,
+      int toToken,
+      String to,
+      int maxPrice,
+      int maxPricefraction,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.PoolSwap);
 
     script.addAll(_createScript(from, nw));
-    script.addAll(_convertUint(fromToken));
+    script.addAll(_convertCompactVarInt(fromToken));
     script.addAll(_convertInt64(fromAmount));
 
     script.addAll(_createScript(to, nw));
-    script.addAll(_convertUint(toToken));
+    script.addAll(_convertCompactVarInt(toToken));
 
     script.addAll(_convertInt64(maxPrice));
     script.addAll(_convertInt64(maxPricefraction));
@@ -291,7 +323,15 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createPoolSwapV2Output(int fromToken, String from, int fromAmount, int toToken, String to, int maxPrice, int maxPricefraction, List<int> poolIds,
+  static DefiOutput createPoolSwapV2Output(
+      int fromToken,
+      String from,
+      int fromAmount,
+      int toToken,
+      String to,
+      int maxPrice,
+      int maxPricefraction,
+      List<int> poolIds,
       [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.PoolSwapV2);
 
@@ -322,7 +362,15 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAddPoolLiquidity(int tokenA, String fromA, int fromAmountA, int tokenB, String fromB, int fromAmountB, String shareAddress, [NetworkType? nw]) {
+  static DefiOutput createAddPoolLiquidity(
+      int tokenA,
+      String fromA,
+      int fromAmountA,
+      int tokenB,
+      String fromB,
+      int fromAmountB,
+      String shareAddress,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AddPoolLiquidity);
 
     script.add(2);
@@ -336,7 +384,17 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAddPoolLiquiditySingleAddress(String from, int tokenA, int fromAmountA, int tokenB, int fromAmountB, String shareAddress, [NetworkType? nw]) {
+  static DefiOutput createMessageOutput(String message, [NetworkType? nw]) {
+    var script = utf8.encode(message);
+
+    var defiScript = Uint8List.fromList(script);
+
+    return DefiOutput(_postpare(defiScript), 0);
+  }
+
+  static DefiOutput createAddPoolLiquiditySingleAddress(String from, int tokenA,
+      int fromAmountA, int tokenB, int fromAmountB, String shareAddress,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AddPoolLiquidity);
 
     script.add(1);
@@ -350,7 +408,8 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createRemovePoolLiquidity(String from, int token, int value, [NetworkType? nw]) {
+  static DefiOutput createRemovePoolLiquidity(String from, int token, int value,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.RemovePoolLiquidity);
 
     script.addAll(_createScript(from, nw));
@@ -363,7 +422,9 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createAccountToUtxos(dynamic token, dynamic from, int value, int mintingOutputsStart, [NetworkType? nw]) {
+  static DefiOutput createAccountToUtxos(
+      dynamic token, dynamic from, int value, int mintingOutputsStart,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.AccountToUtxos);
 
     script.addAll(_createScript(from, nw));
@@ -375,7 +436,8 @@ class DefiTransactionHelper {
     return DefiOutput(_postpare(defiScript), 0);
   }
 
-  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value, [NetworkType? nw]) {
+  static DefiOutput createUtxosToAccount(dynamic token, dynamic from, int value,
+      [NetworkType? nw]) {
     var script = _prepare(DefiTxTypes.UtxosToAccount);
 
     script.add(1); // add 1 from account
@@ -403,7 +465,8 @@ class DefiTransactionHelper {
     return Uint8List.fromList(script);
   }
 
-  static Uint8List _addAccount(dynamic token, dynamic address, int value, NetworkType? nw) {
+  static Uint8List _addAccount(
+      dynamic token, dynamic address, int value, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
 
     script.addAll(_createScript(address, nw));
@@ -454,6 +517,10 @@ class DefiTransactionHelper {
     var buffer = Uint8List(varuint.encodingLength(value));
     varuint.encode(value, buffer, 0);
     return buffer;
+  }
+
+  static Uint8List _convertCompactVarInt(int value) {
+    return compactvaruint.encode(value);
   }
 
   static Uint8List _convertUtf8(String value) {

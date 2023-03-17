@@ -197,6 +197,8 @@ class Transaction {
     writeUInt32(locktime);
     writeUInt32(hashType);
 
+    print("sign buffer is " + HEX.encode(tbuffer));
+
     return bcrypto.hash256(tbuffer);
   }
 
