@@ -7,6 +7,7 @@ import 'package:defichaindart/src/utils/varuint.dart';
 import 'package:hex/hex.dart';
 import 'package:convert/convert.dart';
 import 'utils/varuint.dart' as varuint;
+import 'utils/compactuint.dart' as compactvaruint;
 
 import '../defichaindart.dart';
 
@@ -312,7 +313,7 @@ class DefiTransactionHelper {
     script.addAll(_convertInt64(fromAmount));
 
     script.addAll(_createScript(to, nw));
-    script.addAll(_convertVarInt(toToken));
+    script.addAll(_convertCompactVarInt(toToken));
 
     script.addAll(_convertInt64(maxPrice));
     script.addAll(_convertInt64(maxPricefraction));
@@ -515,6 +516,12 @@ class DefiTransactionHelper {
   static Uint8List _convertVarInt(int value) {
     var buffer = Uint8List(varuint.encodingLength(value));
     varuint.encode(value, buffer, 0);
+    return buffer;
+  }
+
+  static Uint8List _convertCompactVarInt(int value) {
+    var buffer = Uint8List(compactvaruint.encodingLength(value));
+    compactvaruint.encode(value, buffer, 0);
     return buffer;
   }
 
