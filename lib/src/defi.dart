@@ -414,7 +414,7 @@ class DefiTransactionHelper {
 
     script.addAll(_createScript(from, nw));
 
-    script.addAll(_convertUint(token));
+    script.addAll(_convertVarInt(token));
     script.addAll(_convertInt64(value));
 
     var defiScript = Uint8List.fromList(script);
