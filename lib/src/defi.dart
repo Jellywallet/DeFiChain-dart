@@ -336,18 +336,18 @@ class DefiTransactionHelper {
     var script = _prepare(DefiTxTypes.PoolSwapV2);
 
     script.addAll(_createScript(from, nw));
-    script.addAll(_convertUint(fromToken));
+    script.addAll(_convertCompactVarInt(fromToken));
     script.addAll(_convertInt64(fromAmount));
 
     script.addAll(_createScript(to, nw));
-    script.addAll(_convertUint(toToken));
+    script.addAll(_convertCompactVarInt(toToken));
 
     script.addAll(_convertUint64(maxPrice));
     script.addAll(_convertUint64(maxPricefraction));
 
     script.add(poolIds.length);
     for (var pool in poolIds) {
-      script.addAll(_convertUint(pool));
+      script.addAll(_convertCompactVarInt(pool));
     }
 
     var defiScript = Uint8List.fromList(script);
@@ -414,7 +414,7 @@ class DefiTransactionHelper {
 
     script.addAll(_createScript(from, nw));
 
-    script.addAll(_convertUint(token));
+    script.addAll(_convertCompactVarInt(token));
     script.addAll(_convertInt64(value));
 
     var defiScript = Uint8List.fromList(script);
@@ -459,7 +459,7 @@ class DefiTransactionHelper {
 
   static Uint8List _createTokenBalance(int token, int amount, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
-    script.addAll(_convertVarInt(token));
+    script.addAll(_convertCompactVarInt(token));
     script.addAll(_convertInt64(amount));
 
     return Uint8List.fromList(script);
@@ -485,7 +485,7 @@ class DefiTransactionHelper {
     script.add(token.length);
     for (var i = 0; i < token.length; i++) {
       // add token type
-      script.addAll(_convertInt32(token[i]));
+      script.addAll(_convertCompactVarInt(token[i]));
       // add token amount
       script.addAll(_convertInt64(value[i]));
     }
