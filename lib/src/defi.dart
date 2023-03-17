@@ -309,7 +309,7 @@ class DefiTransactionHelper {
     var script = _prepare(DefiTxTypes.PoolSwap);
 
     script.addAll(_createScript(from, nw));
-    script.addAll(_convertUint(fromToken));
+    script.addAll(_convertCompactVarInt(fromToken));
     script.addAll(_convertInt64(fromAmount));
 
     script.addAll(_createScript(to, nw));
@@ -520,9 +520,7 @@ class DefiTransactionHelper {
   }
 
   static Uint8List _convertCompactVarInt(int value) {
-    var buffer = Uint8List(compactvaruint.encodingLength(value));
-    compactvaruint.encode(value, buffer, 0);
-    return buffer;
+    return compactvaruint.encode(value);
   }
 
   static Uint8List _convertUtf8(String value) {

@@ -32,7 +32,8 @@ class TransactionBuilder {
 
   List<Input>? get inputs => _inputs;
 
-  factory TransactionBuilder.fromTransaction(Transaction transaction, [NetworkType? network]) {
+  factory TransactionBuilder.fromTransaction(Transaction transaction,
+      [NetworkType? network]) {
     final txb = TransactionBuilder(network: network);
     // Copy transaction fields
     txb.setVersion(transaction.version!);
@@ -44,7 +45,13 @@ class TransactionBuilder {
     });
 
     transaction.ins.forEach((txIn) {
-      txb._addInputUnsafe(txIn.hash!, txIn.index, Input(sequence: txIn.sequence, script: txIn.script, witness: txIn.witness));
+      txb._addInputUnsafe(
+          txIn.hash!,
+          txIn.index,
+          Input(
+              sequence: txIn.sequence,
+              script: txIn.script,
+              witness: txIn.witness));
     });
 
     // fix some things not possible through the public API
@@ -110,104 +117,185 @@ class TransactionBuilder {
     return _tx!.addOutputAt(scriptPubKey, value, at);
   }
 
-  int addAnyAccountToAccountOutput(dynamic token, dynamic from, int fromValue, dynamic to, int toValue) {
-    return _tx!.addBaseOutput(DefiTransactionHelper.createAnyAccountToAccountOutput(token, from, fromValue, to, toValue, network));
+  int addAnyAccountToAccountOutput(
+      dynamic token, dynamic from, int fromValue, dynamic to, int toValue) {
+    return _tx!.addBaseOutput(
+        DefiTransactionHelper.createAnyAccountToAccountOutput(
+            token, from, fromValue, to, toValue, network));
   }
 
   int addAuthOutput({int outputIndex = -1}) {
     if (outputIndex < 0) {
       return _tx!.addBaseOutput(DefiTransactionHelper.createAuthOutput());
     }
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.createAuthOutput(), outputIndex);
+    return _tx!
+        .addBaseOutputAt(DefiTransactionHelper.createAuthOutput(), outputIndex);
   }
 
-  int addAddLiquidityOutput(int tokenA, String fromA, int fromAmountA, int tokenB, String fromB, int fromAmountB, String shareAddress) {
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.createAddPoolLiquidity(tokenA, fromA, fromAmountA, tokenB, fromB, fromAmountB, shareAddress, network), 0);
+  int addAddLiquidityOutput(int tokenA, String fromA, int fromAmountA,
+      int tokenB, String fromB, int fromAmountB, String shareAddress) {
+    return _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createAddPoolLiquidity(tokenA, fromA, fromAmountA,
+            tokenB, fromB, fromAmountB, shareAddress, network),
+        0);
   }
 
-  int addAddLiquidityOutputSingleAddress(String from, int tokenA, int fromAmountA, int tokenB, int fromAmountB, String shareAddress) {
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.createAddPoolLiquiditySingleAddress(from, tokenA, fromAmountA, tokenB, fromAmountB, shareAddress, network), 0);
+  int addAddLiquidityOutputSingleAddress(String from, int tokenA,
+      int fromAmountA, int tokenB, int fromAmountB, String shareAddress) {
+    return _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createAddPoolLiquiditySingleAddress(from, tokenA,
+            fromAmountA, tokenB, fromAmountB, shareAddress, network),
+        0);
   }
 
   int addRemoveLiquidityOutput(int token, int amount, String shareAddress) {
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.createRemovePoolLiquidity(shareAddress, token, amount, network), 0);
+    return _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createRemovePoolLiquidity(
+            shareAddress, token, amount, network),
+        0);
   }
 
-  int addAccountToAccountOutput(dynamic token, dynamic from, dynamic to, int toValue) {
-    return _tx!.addBaseOutput(DefiTransactionHelper.createAccountToAccountOuput(token, from, to, toValue, network));
+  int addAccountToAccountOutput(
+      dynamic token, dynamic from, dynamic to, int toValue) {
+    return _tx!.addBaseOutput(DefiTransactionHelper.createAccountToAccountOuput(
+        token, from, to, toValue, network));
   }
 
-  int addAccountToAccountOutputAt(dynamic token, dynamic from, dynamic to, int toValue, int at) {
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.createAccountToAccountOuput(token, from, to, toValue, network), at);
+  int addAccountToAccountOutputAt(
+      dynamic token, dynamic from, dynamic to, int toValue, int at) {
+    return _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createAccountToAccountOuput(
+            token, from, to, toValue, network),
+        at);
   }
 
-  int addAccountToUtxoOutput(dynamic token, dynamic from, int value, int mintStartintAt) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.createAccountToUtxos(token, from, value, mintStartintAt, network), 0);
+  int addAccountToUtxoOutput(
+      dynamic token, dynamic from, int value, int mintStartintAt) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createAccountToUtxos(
+            token, from, value, mintStartintAt, network),
+        0);
     return 0;
   }
 
-  int addUtxosToAccountOutput(dynamic token, dynamic from, int value, [NetworkType? nw]) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.createUtxosToAccount(token, from, value, nw), 0);
+  int addUtxosToAccountOutput(dynamic token, dynamic from, int value,
+      [NetworkType? nw]) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createUtxosToAccount(token, from, value, nw), 0);
     return 0;
   }
 
-  int addSwapOutput(dynamic fromToken, dynamic from, int fromAmount, dynamic toToken, dynamic to, int maxPrice, int maxPricefraction) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.createPoolSwapOutput(fromToken, from, fromAmount, toToken, to, maxPrice, maxPricefraction, network), 0);
+  int addSwapOutput(dynamic fromToken, dynamic from, int fromAmount,
+      dynamic toToken, dynamic to, int maxPrice, int maxPricefraction) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createPoolSwapOutput(fromToken, from, fromAmount,
+            toToken, to, maxPrice, maxPricefraction, network),
+        0);
     return 0;
   }
 
-  int addSwapV2Output(dynamic fromToken, dynamic from, int fromAmount, dynamic toToken, dynamic to, int maxPrice, int maxPricefraction, List<int> poolIds) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.createPoolSwapV2Output(fromToken, from, fromAmount, toToken, to, maxPrice, maxPricefraction, poolIds, network), 0);
+  int addSwapV2Output(
+      dynamic fromToken,
+      dynamic from,
+      int fromAmount,
+      dynamic toToken,
+      dynamic to,
+      int maxPrice,
+      int maxPricefraction,
+      List<int> poolIds) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createPoolSwapV2Output(
+            fromToken,
+            from,
+            fromAmount,
+            toToken,
+            to,
+            maxPrice,
+            maxPricefraction,
+            poolIds,
+            network),
+        0);
     return 0;
   }
 
   int addCloseVault(dynamic vaultId, dynamic to) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.closeVaultOutput(vaultId, to, network), 0);
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.closeVaultOutput(vaultId, to, network), 0);
     return 0;
   }
 
   int addCreateVault(dynamic ownerAddress, dynamic schemeId, int vaultFees) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.createVaultOutput(ownerAddress, schemeId, vaultFees, network), 0);
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.createVaultOutput(
+            ownerAddress, schemeId, vaultFees, network),
+        0);
     return 0;
   }
 
   int addUpdateVault(dynamic vaultId, dynamic ownerAddress, dynamic schemeId) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.updateVaultOutput(vaultId, ownerAddress, schemeId, network), 0);
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.updateVaultOutput(
+            vaultId, ownerAddress, schemeId, network),
+        0);
     return 0;
   }
 
-  int addDepositToVault(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.depositToVaultOutput(vaultId, from, tokenId, tokenAmount, network), 0);
+  int addDepositToVault(
+      dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.depositToVaultOutput(
+            vaultId, from, tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
-  int addWithdrawToVault(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.withdrawFromVaultOutput(vaultId, to, tokenId, tokenAmount, network), 0);
+  int addWithdrawToVault(
+      dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.withdrawFromVaultOutput(
+            vaultId, to, tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
-  int addTakeLoan(dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.takeLoanVaultOutput(vaultId, to, tokenId, tokenAmount, network), 0);
+  int addTakeLoan(
+      dynamic vaultId, dynamic to, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.takeLoanVaultOutput(
+            vaultId, to, tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
-  int addPaybackLoan(dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.paybackLoanVaultOutput(vaultId, from, tokenId, tokenAmount, network), 0);
+  int addPaybackLoan(
+      dynamic vaultId, dynamic from, dynamic tokenId, dynamic tokenAmount) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.paybackLoanVaultOutput(
+            vaultId, from, tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
-  int addPlaceAuctionBid(String vaultId, int index, String from, int tokenId, int tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.placeAuctionBidOutput(vaultId, index, from, tokenId, tokenAmount, network), 0);
+  int addPlaceAuctionBid(
+      String vaultId, int index, String from, int tokenId, int tokenAmount) {
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.placeAuctionBidOutput(
+            vaultId, index, from, tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
   int addMintToken(dynamic tokenId, dynamic tokenAmount) {
-    _tx!.addBaseOutputAt(DefiTransactionHelper.mintTokenOutput(tokenId, tokenAmount, network), 0);
+    _tx!.addBaseOutputAt(
+        DefiTransactionHelper.mintTokenOutput(tokenId, tokenAmount, network),
+        0);
     return 0;
   }
 
   int addSmartContractOutput(int token, dynamic from, int value) {
-    return _tx!.addBaseOutputAt(DefiTransactionHelper.smartContractOutput(token, from, value, network), 0);
+    return _tx!.addBaseOutputAt(
+        DefiTransactionHelper.smartContractOutput(token, from, value, network),
+        0);
   }
 
   int addSaiiveExportOutput() {
@@ -216,10 +304,12 @@ class TransactionBuilder {
   }
 
   int addMessageOutput(String message) {
-    return _tx!.addBaseOutput(DefiTransactionHelper.createMessageOutput(message));
+    return _tx!
+        .addBaseOutput(DefiTransactionHelper.createMessageOutput(message));
   }
 
-  int addInput(dynamic txHash, int? vout, [int? sequence, Uint8List? prevOutScript]) {
+  int addInput(dynamic txHash, int? vout,
+      [int? sequence, Uint8List? prevOutScript]) {
     if (!_canModifyInputs()) {
       throw ArgumentError('No, this would invalidate signatures');
     }
@@ -237,12 +327,21 @@ class TransactionBuilder {
     } else {
       throw ArgumentError('txHash invalid');
     }
-    return _addInputUnsafe(hash, vout, Input(sequence: sequence, prevOutScript: prevOutScript, value: value));
+    return _addInputUnsafe(hash, vout,
+        Input(sequence: sequence, prevOutScript: prevOutScript, value: value));
   }
 
-  dynamic sign({required int vin, required ECPair keyPair, String? prevOutScriptType, Uint8List? redeemScript, int? witnessValue, Uint8List? witnessScript, int? hashType}) {
+  dynamic sign(
+      {required int vin,
+      required ECPair keyPair,
+      String? prevOutScriptType,
+      Uint8List? redeemScript,
+      int? witnessValue,
+      Uint8List? witnessScript,
+      int? hashType}) {
     // TODO checkSignArgs
-    if (keyPair.network != null && keyPair.network.toString().compareTo(network.toString()) != 0) {
+    if (keyPair.network != null &&
+        keyPair.network.toString().compareTo(network.toString()) != 0) {
       throw ArgumentError('Inconsistent network');
     }
     if (vin >= _inputs!.length) throw ArgumentError('No input at index: $vin');
@@ -265,7 +364,8 @@ class TransactionBuilder {
     // enforce in order signing of public keys
     var signed = false;
     for (var i = 0; i < input.pubkeys!.length; i++) {
-      if (HEX.encode(ourPubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+      if (HEX.encode(ourPubKey).compareTo(HEX.encode(input.pubkeys![i]!)) !=
+          0) {
         continue;
       }
       if (input.signatures![i] != null) {
@@ -283,7 +383,13 @@ class TransactionBuilder {
   }
 
   Uint8List prepareSign(
-      {required int vin, required Uint8List pubKey, String? prevOutScriptType, Uint8List? redeemScript, int? witnessValue, Uint8List? witnessScript, int? hashType}) {
+      {required int vin,
+      required Uint8List pubKey,
+      String? prevOutScriptType,
+      Uint8List? redeemScript,
+      int? witnessValue,
+      Uint8List? witnessScript,
+      int? hashType}) {
     if (vin >= _inputs!.length) throw ArgumentError('No input at index: $vin');
     hashType = hashType ?? SIGHASH_ALL;
     if (_needsOutputs(hashType)) {
@@ -293,7 +399,9 @@ class TransactionBuilder {
     final ourPubKey = pubKey;
 
     // if redeemScript was previously provided, enforce consistency
-    if (input.redeemScript != null && redeemScript != null && input.redeemScript.toString() != redeemScript.toString()) {
+    if (input.redeemScript != null &&
+        redeemScript != null &&
+        input.redeemScript.toString() != redeemScript.toString()) {
       throw ArgumentError('Inconsistent redeemScript');
     }
 
@@ -308,11 +416,14 @@ class TransactionBuilder {
         // TODO p2wsh
       }
       if (redeemScript != null) {
-        final p2sh = P2SH(data: PaymentData(redeem: PaymentData(output: redeemScript)), network: network);
+        final p2sh = P2SH(
+            data: PaymentData(redeem: PaymentData(output: redeemScript)),
+            network: network);
         if (input.prevOutScript != null) {
           // TODO check
         }
-        final expanded = OutputBase.expandOutput(p2sh.data!.redeem!.output, ourPubKey);
+        final expanded =
+            OutputBase.expandOutput(p2sh.data!.redeem!.output, ourPubKey);
 
         if (expanded.pubkeys == null) {
           throw ArgumentError(
@@ -320,13 +431,18 @@ class TransactionBuilder {
           );
         }
 
-        if (input.signatures != null && input.signatures!.any((x) => x != null)) {
+        if (input.signatures != null &&
+            input.signatures!.any((x) => x != null)) {
           expanded.signatures = input.signatures;
         }
 
         Uint8List? signScript = redeemScript;
         if (expanded.type == SCRIPT_TYPES['P2WPKH']) {
-          signScript = P2PKH(data: PaymentData(pubkey: expanded.pubkeys![0]), network: network).data!.output;
+          signScript = P2PKH(
+                  data: PaymentData(pubkey: expanded.pubkeys![0]),
+                  network: network)
+              .data!
+              .output;
         }
         input.redeemScript = redeemScript;
         input.redeemScriptType = expanded.type;
@@ -349,7 +465,10 @@ class TransactionBuilder {
           input.hasWitness = true;
           input.signatures = [null];
           input.pubkeys = [ourPubKey];
-          input.signScript = P2PKH(data: PaymentData(pubkey: ourPubKey), network: network).data!.output;
+          input.signScript =
+              P2PKH(data: PaymentData(pubkey: ourPubKey), network: network)
+                  .data!
+                  .output;
         } else if (type == SCRIPT_TYPES['P2PKH']) {
           var prevOutScript = pubkeyToOutputScript(ourPubKey);
           input.prevOutType = SCRIPT_TYPES['P2PKH'];
@@ -369,7 +488,8 @@ class TransactionBuilder {
     }
     var signatureHash;
     if (input.hasWitness!) {
-      signatureHash = _tx!.hashForWitnessV0(vin, input.signScript!, input.value!, hashType);
+      signatureHash =
+          _tx!.hashForWitnessV0(vin, input.signScript!, input.value!, hashType);
     } else {
       signatureHash = _tx!.hashForSignature(vin, input.signScript, hashType);
     }
@@ -387,13 +507,19 @@ class TransactionBuilder {
       Uint8List? witnessScript,
       int? hashType}) {
     prepareSign(
-        pubKey: pubKey, vin: vin, hashType: hashType, prevOutScriptType: prevOutScriptType, redeemScript: redeemScript, witnessScript: witnessScript, witnessValue: witnessValue);
+        pubKey: pubKey,
+        vin: vin,
+        hashType: hashType,
+        prevOutScriptType: prevOutScriptType,
+        redeemScript: redeemScript,
+        witnessScript: witnessScript,
+        witnessValue: witnessValue);
     final input = _inputs![vin];
     var signed = false;
     hashType = hashType ?? SIGHASH_ALL;
 
     for (var i = 0; i < input.pubkeys!.length; i++) {
-      if (HEX.encode(pubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+      if (HEX.encode(pubKey).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
         continue;
       }
       if (input.signatures![i] != null) {
@@ -415,13 +541,19 @@ class TransactionBuilder {
       Uint8List? witnessScript,
       int? hashType}) {
     prepareSign(
-        pubKey: pubKey, vin: vin, hashType: hashType, prevOutScriptType: prevOutScriptType, redeemScript: redeemScript, witnessScript: witnessScript, witnessValue: witnessValue);
+        pubKey: pubKey,
+        vin: vin,
+        hashType: hashType,
+        prevOutScriptType: prevOutScriptType,
+        redeemScript: redeemScript,
+        witnessScript: witnessScript,
+        witnessValue: witnessValue);
     final input = _inputs![vin];
     var signed = false;
     hashType = hashType ?? SIGHASH_ALL;
 
     for (var i = 0; i < input.pubkeys!.length; i++) {
-      if (HEX.encode(pubKey!).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
+      if (HEX.encode(pubKey).compareTo(HEX.encode(input.pubkeys![i]!)) != 0) {
         continue;
       }
       if (input.signatures![i] != null) {
@@ -445,10 +577,15 @@ class TransactionBuilder {
 
     for (var i = 0; i < _inputs!.length; i++) {
       final input = _inputs![i];
-      if (input.pubkeys != null && input.signatures != null && input.pubkeys!.isNotEmpty && input.signatures!.isNotEmpty) {
-        final result = buildByType(input.prevOutType, input, allowIncomplete, network);
+      if (input.pubkeys != null &&
+          input.signatures != null &&
+          input.pubkeys!.isNotEmpty &&
+          input.signatures!.isNotEmpty) {
+        final result =
+            buildByType(input.prevOutType, input, allowIncomplete, network);
         if (result == null) {
-          if (!allowIncomplete && input.prevOutType == SCRIPT_TYPES['NONSTANDARD']) {
+          if (!allowIncomplete &&
+              input.prevOutType == SCRIPT_TYPES['NONSTANDARD']) {
             throw ArgumentError('Unknown input type');
           }
           if (!allowIncomplete) {
@@ -483,8 +620,10 @@ class TransactionBuilder {
   }
 
   bool? _overMaximumFees(int bytes) {
-    var incoming = _inputs!.fold(0, (dynamic cur, acc) => cur + (acc.value ?? 0));
-    var outgoing = _tx!.outs.fold(0, (dynamic cur, acc) => cur + (acc.value ?? 0));
+    var incoming =
+        _inputs!.fold(0, (dynamic cur, acc) => cur + (acc.value ?? 0));
+    var outgoing =
+        _tx!.outs.fold(0, (dynamic cur, acc) => cur + (acc.value ?? 0));
     var fee = incoming - outgoing;
     var feeRate = fee ~/ bytes;
     return feeRate > maximumFeeRate;
@@ -566,7 +705,8 @@ class TransactionBuilder {
 
     // if an input value was given, retain it
     if (options.script != null) {
-      input = Input.expandInput(options.script!, options.witness ?? EMPTY_WITNESS);
+      input =
+          Input.expandInput(options.script!, options.witness ?? EMPTY_WITNESS);
     } else {
       input = Input();
     }
@@ -599,13 +739,23 @@ class TransactionBuilder {
   Map get prevTxSet => _prevTxSet;
 }
 
-PaymentData? buildByType(String? type, Input input, bool allowIncomplete, NetworkType? network) {
+PaymentData? buildByType(
+    String? type, Input input, bool allowIncomplete, NetworkType? network) {
   if (type == SCRIPT_TYPES['P2PKH']) {
-    return P2PKH(data: PaymentData(pubkey: input.pubkeys![0], signature: input.signatures![0]), network: network).data;
+    return P2PKH(
+            data: PaymentData(
+                pubkey: input.pubkeys![0], signature: input.signatures![0]),
+            network: network)
+        .data;
   } else if (type == SCRIPT_TYPES['P2WPKH']) {
-    return P2WPKH(data: PaymentData(pubkey: input.pubkeys![0], signature: input.signatures![0]), network: network).data;
+    return P2WPKH(
+            data: PaymentData(
+                pubkey: input.pubkeys![0], signature: input.signatures![0]),
+            network: network)
+        .data;
   } else if (type == SCRIPT_TYPES['P2SH']) {
-    final redeem = buildByType(input.redeemScriptType, input, allowIncomplete, network);
+    final redeem =
+        buildByType(input.redeemScriptType, input, allowIncomplete, network);
 
     if (redeem == null) {
       return null;
