@@ -458,7 +458,7 @@ class DefiTransactionHelper {
 
   static Uint8List _createTokenBalance(int token, int amount, NetworkType? nw) {
     var script = List<int>.empty(growable: true);
-    script.addAll(_convertVarInt(token));
+    script.addAll(_convertCompactVarInt(token));
     script.addAll(_convertInt64(amount));
 
     return Uint8List.fromList(script);
