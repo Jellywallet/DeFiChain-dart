@@ -7,7 +7,10 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  defichain_bech32: ^0.1.0
+  defichain_bech32:
+    git:
+      url: https://github.com/IhorSavva/bech32.git
+      ref: 8d2d8639ba4bda4dc5b063d63a9cad13fbf7eedb
   bip32_defichain:
     git:
       url: https://github.com/Jellywallet/bip32-dart
