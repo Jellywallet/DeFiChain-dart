@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 import 'models/networks.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
-import 'package:defichain_bech32/defichain_bech32.dart';
 import 'payments/index.dart' show PaymentData;
 import 'payments/p2pkh.dart';
 import 'payments/p2sh.dart';
 import 'payments/p2wpkh.dart';
+import 'package:defichain_bech32/src/segwit.dart';
 
 class Address {
   static bool validateAddress(String address, [NetworkType? nw]) {

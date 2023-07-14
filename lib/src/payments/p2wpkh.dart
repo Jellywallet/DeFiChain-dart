@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:bip32_defichain/src/utils/ecurve.dart' show isPoint;
-import 'package:defichain_bech32/defichain_bech32.dart';
+import 'package:defichain_bech32/src/segwit.dart';
+import 'package:defichain_bech32/src/exceptions.dart';
 
 import '../crypto.dart';
 import '../models/networks.dart';
